@@ -25,19 +25,22 @@ class Argument(Enum):
 class Marker:
     def __init__(
         self,
-        prefix: str,
         name: str,
         type: MarkerType,
         arg: Optional[Argument] = Argument.REQUIRED,
-        argc: Optional[int] = 1
+        argc: Optional[int] = 1,
+        prefix: Optional[str] = None,
     ):
-        self.prefix = prefix.strip()
+        self.prefix = prefix.strip() if prefix else None
         self.name = name.strip()
         self.type = type
         self.arg = arg
         self.argc = argc
 
     def pattern(self):
+        if not self.prefix:
+            raise ValueError("Prefix not specified")
+
         pfx = re.escape(self.prefix)
         nm = re.escape(self.name)
         base = f"{pfx}{nm}"

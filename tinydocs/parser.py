@@ -1,6 +1,6 @@
 # @module parser
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from .markers import Marker, Argument
 import re
 
@@ -12,75 +12,89 @@ class Parser:
     # @constructor
     # @param file The file to parse
     # @param comment The comment prefix (#, //, etc). Defaults to `#`
-    def __init__(self, file: Path, comment: str = "#"):
+    def __init__(self, file: Path, comment: Optional[str] = "#", prefix: Optional[str] = "@"):
+        if not comment:
+            raise ValueError("comment should be defined")
+        if not prefix:
+            raise ValueError("prefix should be defined")
+        
         self.file = file
         self.comment = comment
+        self.prefix = prefix
 
     # @method parse
     # @param markers The list of markers to look for while parsing 
     def parse(self, markers: List[Marker]) -> List[Dict[str, Any]]:
+        for marker in markers:
+            if not marker.prefix:
+                if self.prefix:
+                    marker.prefix = self.prefix
+                else:
+                    raise ValueError("You should specify a global prefix or assing one to each marker")
+
         text = self.file.read_text()
         lines = text.split("\n")
-        results = []
-
-        comment_prefix = rf'^{re.escape(self.comment)}'
-        marker_prefixes = list(set(m.prefix for m in markers))
-        prefix_pattern = rf"^\s*[{re.escape(''.join(marker_prefixes))}]"
-
-        current_entry = None
-        # Track entries that need their names inferred from the next code line
-        pending_inference = []
+        
+        all_blocks = []
+        current_block = None
+        module_node = None
 
         for line_number, line in enumerate(lines, start=1):
             raw_line = line.strip()
-            is_comment = re.match(comment_prefix, raw_line)
+            is_comment = re.match(rf'^{re.escape(self.comment)}', raw_line)
 
+            # 1. If it's not a comment, the current block is finished
             if not is_comment:
-                if pending_inference and raw_line:
-                    self._infer_names(pending_inference, raw_line)
-                    pending_inference = []
-                
-                current_entry = None
+                current_block = None
                 continue
 
             content = re.sub(rf'^{re.escape(self.comment)}\s*', '', raw_line).strip()
             
+            # 2. Check if this comment line starts a new @marker
             found_new_marker = False
             for marker in markers:
-                pattern = marker.pattern()
-                match = re.search(pattern, content)
-
+                match = re.search(marker.pattern(), content)
                 if match:
                     found_new_marker = True
+
+                    args = []
+                    if marker.arg != Argument.NONE:
+                        raw_args = match.group("arg").strip()
+                        argc = getattr(marker, 'argc', 1)
+                        args = raw_args.split(" ", maxsplit=argc - 1)
+
                     entry = {
                         "marker": marker.name,
-                        "type": marker.type.value,
-                        "raw": [line],
-                        "file": str(self.file),
+                        "args": args,
                         "line": line_number,
-                        "args": []
+                        "children": []
                     }
 
-                    if marker.arg != Argument.NONE:
-                        argc = getattr(marker, 'argc', 1)
-                        arg_str = match.group("arg").strip()
-                        entry["args"] = arg_str.split(" ", maxsplit=argc-1)
-
-                    results.append(entry)
-                    current_entry = entry
+                    # Logic: Is this a "Top Level" block or a sub-attribute?
+                    # Attributes like @param or @desc belong to the block above them
+                    if marker.name in ["param", "desc", "arg", "returns"]:
+                        if current_block:
+                            current_block["children"].append(entry)
+                        else:
+                            all_blocks.append(entry) # Fallback if no parent
+                    else:
+                        # This is a new primary block (like @class, @method, or @module)
+                        if marker.name == "module":
+                            module_node = entry
+                        
+                        all_blocks.append(entry)
+                        current_block = entry
                     break
 
-            if not found_new_marker and current_entry:
-                if re.match(prefix_pattern, content):
-                    current_entry = None
+            if not found_new_marker and current_block:
+                if current_block["args"]:
+                    current_block["args"][-1] += f" {content}"
                 else:
-                    if current_entry["args"]:
-                        current_entry["args"][-1] += f" {content}"
-                    else:
-                        current_entry["args"] = [content]
-                    current_entry["raw"].append(line)
+                    current_block["args"] = [content]
 
-        for res in results:
-            res["raw"] = "\n".join(res["raw"])
+        if module_node:
+            others = [b for b in all_blocks if b is not module_node]
+            module_node["children"].extend(others)
+            return [module_node]
 
-        return results
+        return all_blocks

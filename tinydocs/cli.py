@@ -24,57 +24,60 @@ def main():
     ignore_checker = IgnoreChecker([".git/"])
     ignore_checker.load_ignore_files(args.ignore.split(","))
 
-    all_files = ignore_checker.filter(args.dirs)
+    files = ignore_checker.filter(args.dirs)
     if args.files:
-        all_files.extend(args.files.split(","))
+        files.extend(args.files.split(","))
 
     if args.list_files:
-        for f in all_files:
+        for f in files:
             print(f)
+        return
 
-    prefix = "@"
     markers = [
         Marker(
-            prefix=prefix,
             name="module",
             arg=Argument.REQUIRED,
             type=MarkerType.MODULE
         ),
         Marker(
-            prefix=prefix,
             name="class",
             arg=Argument.REQUIRED,
             type=MarkerType.CLASS
         ),
         Marker(
-            prefix=prefix,
             name="method",
             arg=Argument.REQUIRED,
             type=MarkerType.FUNCTION
         ),
         Marker(
-            prefix=prefix,
             name="desc",
             arg=Argument.REQUIRED,
-            type=MarkerType.DESCRIPTION
+            type=MarkerType.DESCRIPTION,
+            argc=1
         ),
         Marker(
-            prefix=prefix,
             name="param",
             arg=Argument.REQUIRED,
             argc=2,
             type=MarkerType.PARAMETER
         ),
         Marker(
-            prefix=prefix,
             name="constructor",
             arg=Argument.NONE,
             type=MarkerType.ANY
         )
     ]
-    docs = Parser(Path(all_files[4]))
-    results = docs.parse(markers)
-    print(json.dumps(results, indent=2, ensure_ascii=False))
+
+    docs = []
+    for i, file in enumerate(files, start=1):
+        print(f"[{i}/{len(files)}] Parsing {file}...")
+        parser = Parser(Path(file), prefix="@", comment="#")
+        docs.extend(parser.parse(markers))
+
+    json_output = json.dumps(docs, indent=2, ensure_ascii=False)
+
+    with open("tinydocs.json", "w") as file:
+        file.write(json_output)
 
 
 if __name__ == "__main__":
