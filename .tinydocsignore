@@ -1,0 +1,7 @@
+tinydocs/__pycache__/
+.tinydocsignore
+.gitignore
+
+
+*.usage
+

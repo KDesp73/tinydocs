@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# NOTE: Source this file to start developing
+
+if command -v python3.12 >/dev/null 2>&1; then
+  PYTHON_BIN="python3.12"
+elif command -v python3.11 >/dev/null 2>&1; then
+  PYTHON_BIN="python3.11"
+else
+  echo "[ERROR] Python 3.11 or 3.12 is required. Please install one of these versions."
+  return 1 2>/dev/null || exit 1
+fi
+
+VENV_DIR=.venv
+
+if [ ! -d $VENV_DIR ]; then
+  $PYTHON_BIN -m venv $VENV_DIR
+  source $VENV_DIR/bin/activate
+else
+  source $VENV_DIR/bin/activate
+fi
+
+export PYTHONPATH="$(pwd)/pie"
