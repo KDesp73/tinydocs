@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from fnmatch import fnmatch
-from typing import List
+from typing import List, Optional
 
 
 class IgnoreChecker:
@@ -36,7 +36,6 @@ class IgnoreChecker:
 
         for file_path in file_paths:
             if os.path.exists(file_path):
-                print(f"Loading ignore rules from {file_path}...")
                 with open(file_path, 'r', encoding='utf-8') as f:
                     for line in f:
                         self.add_pattern(line)
@@ -78,4 +77,16 @@ class IgnoreChecker:
         
         return ignored
 
-    def filter(files: List[str])
+    def filter(self, dirs: List[str]) -> List[str]:
+        all_files = []
+        
+        if dirs:
+            dirs = [d.strip() for d in dirs.split(",")]
+            for d_path in dirs:
+                path_obj = Path(d_path)
+                if path_obj.is_dir():
+                    for item in path_obj.rglob("*"):
+                        if item.is_file() and not self.is_ignored(item):
+                            all_files.append(str(item))
+
+        return sorted(set(all_files))

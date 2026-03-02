@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 
+import json
 import argparse
 from pathlib import Path
 from .ignore import IgnoreChecker
+from .docs import Docs
+from .markers import Marker, MarkerType, Argument
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("-F", "--files", type=str, help="Provide files (comma separated)")
-    parser.add_argument("-D", "--dirs", type=str, default=".", help="Provide directories (comma separated)")
+    parser.add_argument("-D", "--dirs", type=str, help="Provide directories (comma separated)")
     parser.add_argument("-I", "--ignore", type=str, default=".gitignore", help="Paths to ignore files (comma seperated)")
+    parser.add_argument("--list-files", action="store_true", help="List the files included in the documentation generation")
+    parser.add_argument("--comment-style", type=str, default="#", help="Specify the comment style (#, //, etc)")
 
     return parser.parse_args()
 
@@ -17,29 +22,51 @@ def main():
     ignore_checker = IgnoreChecker([".git/"])
     ignore_checker.load_ignore_files(args.ignore.split(","))
 
-    all_files = []
-    
-    # Process explicit files
+    all_files = ignore_checker.filter(args.dirs)
     if args.files:
-        for f in args.files.split(","):
-            f_path = f.strip()
-            if not ignore_checker.is_ignored(f_path):
-                all_files.append(f_path)
+        all_files.extend(args.files.split(","))
 
-    # Process directories
-    if args.dirs:
-        dirs = [d.strip() for d in args.dirs.split(",")]
-        for d_path in dirs:
-            path_obj = Path(d_path)
-            if path_obj.is_dir():
-                for item in path_obj.rglob("*"):
-                    # Check if file AND ensure no part of its path is ignored
-                    if item.is_file() and not ignore_checker.is_ignored(item):
-                        all_files.append(str(item))
+    if args.list_files:
+        for f in all_files:
+            print(f)
 
-    # Output results
-    for f in sorted(set(all_files)):
-        print(f)
+    prefix = "@"
+    markers = [
+        Marker(
+            prefix=prefix,
+            name="module",
+            arg=Argument.OPTIONAL,
+            type=MarkerType.MODULE
+        ),
+        Marker(
+            prefix=prefix,
+            name="class",
+            arg=Argument.OPTIONAL,
+            type=MarkerType.CLASS
+        ),
+        Marker(
+            prefix=prefix,
+            name="method",
+            arg=Argument.OPTIONAL,
+            type=MarkerType.FUNCTION
+        ),
+        Marker(
+            prefix=prefix,
+            name="desc",
+            arg=Argument.REQUIRED,
+            type=MarkerType.DESCRIPTION
+        ),
+        Marker(
+            prefix=prefix,
+            name="param",
+            arg=Argument.REQUIRED,
+            argc=2,
+            type=MarkerType.PARAMETER
+        ),
+    ]
+    docs = Docs(Path(all_files[2]))
+    results = docs.parse(markers)
+    print(json.dumps(results, indent=2, ensure_ascii=False))
 
 if __name__ == "__main__":
     main()
