@@ -1,23 +1,23 @@
-# @module docs
-
+# @module parser
 from pathlib import Path
 from typing import List, Dict, Any
 from .markers import Marker, Argument
 import re
 
 
-# @class Docs
-# @desc This class is responsible for reading and parsing the doc attributes
-# from a file
-class Docs:
+# @class Parser
+# @desc This class is responsible for reading
+# and parsing the doc attributes from a file
+class Parser:
     # @constructor
     # @param file The file to parse
+    # @param comment The comment prefix (#, //, etc). Defaults to `#`
     def __init__(self, file: Path, comment: str = "#"):
         self.file = file
         self.comment = comment
 
     # @method parse
-    # @param markers The list of markers to look for while parsing
+    # @param markers The list of markers to look for while parsing 
     def parse(self, markers: List[Marker]) -> List[Dict[str, Any]]:
         text = self.file.read_text()
         lines = text.split("\n")
@@ -28,13 +28,18 @@ class Docs:
         prefix_pattern = rf"^\s*[{re.escape(''.join(marker_prefixes))}]"
 
         current_entry = None
+        # Track entries that need their names inferred from the next code line
+        pending_inference = []
 
         for line_number, line in enumerate(lines, start=1):
             raw_line = line.strip()
-            
             is_comment = re.match(comment_prefix, raw_line)
-            
+
             if not is_comment:
+                if pending_inference and raw_line:
+                    self._infer_names(pending_inference, raw_line)
+                    pending_inference = []
+                
                 current_entry = None
                 continue
 
@@ -57,12 +62,9 @@ class Docs:
                     }
 
                     if marker.arg != Argument.NONE:
-                        try:
-                            argc = getattr(marker, 'argc', 1)
-                            arg_str = match.group("arg").strip()
-                            entry["args"] = arg_str.split(" ", maxsplit=argc-1)
-                        except (IndexError, AttributeError):
-                            entry["args"] = []
+                        argc = getattr(marker, 'argc', 1)
+                        arg_str = match.group("arg").strip()
+                        entry["args"] = arg_str.split(" ", maxsplit=argc-1)
 
                     results.append(entry)
                     current_entry = entry
@@ -76,7 +78,6 @@ class Docs:
                         current_entry["args"][-1] += f" {content}"
                     else:
                         current_entry["args"] = [content]
-
                     current_entry["raw"].append(line)
 
         for res in results:

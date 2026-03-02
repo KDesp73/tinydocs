@@ -19,7 +19,6 @@ class MarkerType(Enum):
 
 class Argument(Enum):
     REQUIRED = "required"
-    OPTIONAL = "optional"
     NONE = "none"
 
 
@@ -29,7 +28,7 @@ class Marker:
         prefix: str,
         name: str,
         type: MarkerType,
-        arg: Optional[Argument] = Argument.NONE,
+        arg: Optional[Argument] = Argument.REQUIRED,
         argc: Optional[int] = 1
     ):
         self.prefix = prefix.strip()
@@ -54,10 +53,3 @@ class Marker:
             "arg": self.arg.value if self.arg else Argument.NONE.value,
             "argc": self.argc
         }
-
-
-if __name__ == "__main__":
-    marker = Marker("@", "name", MarkerType.ANY, Argument.NONE)
-
-    marker_json = json.dumps(marker.to_dict(), indent=4)
-    print(marker_json)

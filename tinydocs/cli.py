@@ -4,8 +4,9 @@ import json
 import argparse
 from pathlib import Path
 from .ignore import IgnoreChecker
-from .docs import Docs
+from .parser import Parser
 from .markers import Marker, MarkerType, Argument
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -16,6 +17,7 @@ def parse_arguments():
     parser.add_argument("--comment-style", type=str, default="#", help="Specify the comment style (#, //, etc)")
 
     return parser.parse_args()
+
 
 def main():
     args = parse_arguments()
@@ -35,19 +37,19 @@ def main():
         Marker(
             prefix=prefix,
             name="module",
-            arg=Argument.OPTIONAL,
+            arg=Argument.REQUIRED,
             type=MarkerType.MODULE
         ),
         Marker(
             prefix=prefix,
             name="class",
-            arg=Argument.OPTIONAL,
+            arg=Argument.REQUIRED,
             type=MarkerType.CLASS
         ),
         Marker(
             prefix=prefix,
             name="method",
-            arg=Argument.OPTIONAL,
+            arg=Argument.REQUIRED,
             type=MarkerType.FUNCTION
         ),
         Marker(
@@ -63,10 +65,17 @@ def main():
             argc=2,
             type=MarkerType.PARAMETER
         ),
+        Marker(
+            prefix=prefix,
+            name="constructor",
+            arg=Argument.NONE,
+            type=MarkerType.ANY
+        )
     ]
-    docs = Docs(Path(all_files[2]))
+    docs = Parser(Path(all_files[4]))
     results = docs.parse(markers)
     print(json.dumps(results, indent=2, ensure_ascii=False))
+
 
 if __name__ == "__main__":
     main()
