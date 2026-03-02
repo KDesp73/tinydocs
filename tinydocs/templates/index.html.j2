@@ -1,19 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" x-data="{ darkMode: localStorage.getItem('theme') === 'dark' }" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ name }} Documentation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <style>
         [x-cloak] { display: none !important; }
         .highlight { background-color: #fef08a; border-radius: 2px; padding: 0 2px; }
+        .dark .highlight { background-color: #854d0e; color: white; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans" x-data="{ 
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-200" 
+      x-data="{ 
     search: '',
     
+    toggleTheme() {
+        this.darkMode = !this.darkMode;
+        localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
+    },
+
     shouldShowModule(file, module, children) {
         if (!this.search) return true;
         const s = this.search.toLowerCase();
@@ -29,16 +41,28 @@
     }
 }">
 
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-indigo-600">{{ name }}</h1>
-                <p class="text-xs text-gray-500 uppercase tracking-widest">Generated on {{ timestamp }} by tinydocs</p>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{{ name }}</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest">Generated on {{ timestamp }}</p>
+                </div>
+                <button @click="toggleTheme()" class="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-700">
+                    <span x-show="!darkMode">🌙</span><span x-show="darkMode">☀️</span>
+                </button>
             </div>
-            <div class="relative w-full md:w-96">
-                <input type="text" x-model="search" placeholder="Search modules, classes, or methods..." 
-                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
-                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <div class="relative w-full md:w-96">
+                    <input type="text" x-model="search" placeholder="Search modules, classes, or methods..." 
+                           class="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <button @click="toggleTheme()" class="hidden md:block p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    <span x-show="!darkMode" title="Dark Mode">🌙</span>
+                    <span x-show="darkMode" title="Light Mode">☀️</span>
+                </button>
             </div>
         </div>
     </header>
@@ -46,60 +70,61 @@
     <main class="max-w-7xl mx-auto px-4 py-8">
         <div class="grid grid-cols-1 gap-8">
             {% for item in files %}
-            {# --- Defensive Data Preparation --- #}
             {% set children_list = [] %}
             {% if item.docs and item.docs.children %}
                 {% for child in item.docs.children %}
-                    {% if child.args and child.args[0] %}
-                        {% set _ = children_list.append(child.args[0]) %}
-                    {% endif %}
+                    {% if child.args and child.args[0] %}{% set _ = children_list.append(child.args[0]) %}{% endif %}
                 {% endfor %}
             {% endif %}
             {% set module_name = item.docs.args[0] if (item.docs and item.docs.args) else "Unknown" %}
-            {# ---------------------------------- #}
 
-            <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all"
+            <section class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all"
                      x-show="shouldShowModule('{{ item.file }}', '{{ module_name }}', {{ children_list | tojson }})"
                      x-cloak>
                 
-                <div class="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
+                <div class="bg-gray-800 dark:bg-black text-white px-6 py-3 flex justify-between items-center">
                     <h2 class="font-mono text-sm" :class="search && '{{ item.file }}'.toLowerCase().includes(search.toLowerCase()) ? 'text-yellow-300' : ''">{{ item.file }}</h2>
                 </div>
 
                 <div class="p-6">
                     {% if item.docs %}
-                    <div class="mb-6 flex items-center">
-                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded uppercase mr-2">{{ item.docs.marker }}</span>
-                        <span class="text-xl font-bold" :class="search && '{{ module_name }}'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
-                            {{ module_name }}
-                        </span>
+                    <div class="mb-6 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <span class="bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-2 py-1 rounded uppercase mr-2">{{ item.docs.marker }}</span>
+                            <span class="text-xl font-bold" :class="search && '{{ module_name }}'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200 dark:bg-yellow-900' : ''">
+                                {{ module_name }}
+                            </span>
+                        </div>
                     </div>
 
                     <div class="space-y-6">
                         {% for child in item.docs.children %}
-                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                        <div class="border-l-4 border-indigo-200 dark:border-indigo-800 pl-4 py-1 transition-all"
                              x-show="shouldShowChild('{{ child.args[0] }}', '{{ module_name }}')">
                             
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">{{ child.marker }}</span>
-                                <h3 class="font-bold text-gray-800 text-lg" :class="search && '{{ child.args[0] }}'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
-                                    {{ child.args[0] }}
-                                </h3>
+                            <div class="flex items-center justify-between mb-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 uppercase">{{ child.marker }}</span>
+                                    <h3 class="font-bold text-gray-800 dark:text-gray-200 text-lg" :class="search && '{{ child.args[0] }}'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200 dark:bg-yellow-900' : ''">
+                                        {{ child.args[0] }}
+                                    </h3>
+                                </div>
+                                <span class="text-[10px] font-mono text-gray-400 dark:text-gray-500">L{{ child.line }}</span>
                             </div>
 
                             <div class="ml-4 space-y-2 mt-2">
                                 {% for meta in child.children %}
                                     {% if meta.marker == 'desc' %}
-                                        <p class="text-gray-600 italic text-sm">{{ meta.args[0] }}</p>
+                                        <p class="text-gray-600 dark:text-gray-400 italic text-sm">{{ meta.args[0] }}</p>
                                     {% elif meta.marker == 'param' %}
                                         <div class="text-sm flex items-start gap-2">
-                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">{{ meta.args[0] }}</code>
-                                            <span class="text-gray-500">{{ meta.args[1] }}</span>
+                                            <code class="text-pink-600 dark:text-pink-400 font-bold px-1 bg-pink-50 dark:bg-pink-900/30 rounded">{{ meta.args[0] }}</code>
+                                            <span class="text-gray-500 dark:text-gray-400">{{ meta.args[1] }}</span>
                                         </div>
                                     {% elif meta.marker == 'returns' %}
-                                        <div class="text-sm border-t border-gray-100 pt-2 mt-2">
-                                            <span class="text-green-600 font-bold text-xs uppercase tracking-tight">Returns</span>
-                                            <code class="text-gray-700 block mt-1">{{ meta.args[0] }}</code>
+                                        <div class="text-sm border-t border-gray-100 dark:border-gray-700 pt-2 mt-2">
+                                            <span class="text-green-600 dark:text-green-400 font-bold text-xs uppercase tracking-tight">Returns</span>
+                                            <code class="text-gray-700 dark:text-gray-300 block mt-1">{{ meta.args[0] }}</code>
                                         </div>
                                     {% endif %}
                                 {% endfor %}
@@ -120,6 +145,5 @@
             <p class="text-gray-400 text-lg">No matches found for "<span x-text="search" class="font-bold"></span>"</p>
         </div>
     </main>
-
 </body>
 </html>
