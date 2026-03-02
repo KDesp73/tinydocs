@@ -1,6 +1,6 @@
 {
     "name": "tinydocs",
-    "timestamp": "2026-03-02 21:37:26",
+    "timestamp": "2026-03-02 22:28:59",
     "docs": [
         {
             "file": "tinydocs/generator.py",
@@ -225,33 +225,16 @@
                     {
                         "marker": "enum",
                         "args": [
-                            "MarkerType"
+                            "Argument"
                         ],
                         "line": 8,
                         "children": [
                             {
                                 "marker": "desc",
                                 "args": [
-                                    "Defines the various marker types"
-                                ],
-                                "line": 9,
-                                "children": []
-                            }
-                        ]
-                    },
-                    {
-                        "marker": "enum",
-                        "args": [
-                            "Argument"
-                        ],
-                        "line": 24,
-                        "children": [
-                            {
-                                "marker": "desc",
-                                "args": [
                                     "Defines the argument necessity states"
                                 ],
-                                "line": 25,
+                                "line": 9,
                                 "children": []
                             }
                         ]
@@ -261,14 +244,14 @@
                         "args": [
                             "Marker to identify and split arguments for specific markers."
                         ],
-                        "line": 31,
+                        "line": 15,
                         "children": [
                             {
                                 "marker": "desc",
                                 "args": [
                                     "Represents a documentation tag configuration, defining how"
                                 ],
-                                "line": 32,
+                                "line": 16,
                                 "children": []
                             }
                         ]
@@ -276,7 +259,7 @@
                     {
                         "marker": "constructor",
                         "args": [],
-                        "line": 35,
+                        "line": 19,
                         "children": [
                             {
                                 "marker": "param",
@@ -284,16 +267,7 @@
                                     "name",
                                     "The name of the marker (e.g., 'param', 'method')"
                                 ],
-                                "line": 36,
-                                "children": []
-                            },
-                            {
-                                "marker": "param",
-                                "args": [
-                                    "type",
-                                    "The category of the marker from MarkerType"
-                                ],
-                                "line": 37,
+                                "line": 20,
                                 "children": []
                             },
                             {
@@ -302,7 +276,7 @@
                                     "arg",
                                     "Whether the marker requires an argument"
                                 ],
-                                "line": 38,
+                                "line": 21,
                                 "children": []
                             },
                             {
@@ -311,7 +285,7 @@
                                     "argc",
                                     "The number of expected arguments for splitting"
                                 ],
-                                "line": 39,
+                                "line": 22,
                                 "children": []
                             },
                             {
@@ -320,7 +294,7 @@
                                     "prefix",
                                     "The symbol prefix, usually '@'"
                                 ],
-                                "line": 40,
+                                "line": 23,
                                 "children": []
                             }
                         ]
@@ -330,14 +304,14 @@
                         "args": [
                             "pattern"
                         ],
-                        "line": 55,
+                        "line": 36,
                         "children": [
                             {
                                 "marker": "desc",
                                 "args": [
                                     "Generates a regex pattern to match the marker in a string"
                                 ],
-                                "line": 56,
+                                "line": 37,
                                 "children": []
                             },
                             {
@@ -345,7 +319,7 @@
                                 "args": [
                                     "str The compiled regex pattern"
                                 ],
-                                "line": 57,
+                                "line": 38,
                                 "children": []
                             }
                         ]
@@ -355,14 +329,14 @@
                         "args": [
                             "to_dict"
                         ],
-                        "line": 69,
+                        "line": 50,
                         "children": [
                             {
                                 "marker": "desc",
                                 "args": [
                                     "Serializes the marker instance into a dictionary"
                                 ],
-                                "line": 70,
+                                "line": 51,
                                 "children": []
                             },
                             {
@@ -370,7 +344,7 @@
                                 "args": [
                                     "Dict[str, Any]"
                                 ],
-                                "line": 71,
+                                "line": 52,
                                 "children": []
                             }
                         ]
@@ -380,7 +354,7 @@
                         "args": [
                             "from_dict"
                         ],
-                        "line": 81,
+                        "line": 61,
                         "children": [
                             {
                                 "marker": "param",
@@ -388,7 +362,7 @@
                                     "d",
                                     "The dictionary containing marker data"
                                 ],
-                                "line": 82,
+                                "line": 62,
                                 "children": []
                             },
                             {
@@ -396,7 +370,7 @@
                                 "args": [
                                     "Marker A new instance of Marker"
                                 ],
-                                "line": 83,
+                                "line": 63,
                                 "children": []
                             }
                         ]
@@ -406,7 +380,7 @@
                         "args": [
                             "parse"
                         ],
-                        "line": 97,
+                        "line": 75,
                         "children": [
                             {
                                 "marker": "param",
@@ -414,7 +388,7 @@
                                     "json_str",
                                     "A JSON string representing a list of markers"
                                 ],
-                                "line": 98,
+                                "line": 76,
                                 "children": []
                             },
                             {
@@ -422,7 +396,7 @@
                                 "args": [
                                     "List[Marker] A list of parsed Marker instances"
                                 ],
-                                "line": 99,
+                                "line": 77,
                                 "children": []
                             }
                         ]

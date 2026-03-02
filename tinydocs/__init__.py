@@ -1,14 +1,14 @@
 from .ignore import IgnoreChecker
-from .markers import Marker, MarkerType, Argument
+from .markers import Marker, Argument
 from .generator import SiteGenerator
 from .parser import Parser
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "IgnoreChecker",
     "Marker",
-    "MarkerType",
+    "SiteGenerator",
     "Argument",
     "Parser"
 ]

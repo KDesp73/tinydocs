@@ -33,7 +33,7 @@
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-indigo-600">tinydocs</h1>
-                <p class="text-xs text-gray-500 uppercase tracking-widest">Generated on 2026-03-02 21:37:26 by tinydocs</p>
+                <p class="text-xs text-gray-500 uppercase tracking-widest">Generated on 2026-03-02 22:28:59 by tinydocs</p>
             </div>
             <div class="relative w-full md:w-96">
                 <input type="text" x-model="search" placeholder="Search modules, classes, or methods..." 
@@ -350,10 +350,6 @@
                     
                 
                     
-                        
-                    
-                
-                    
                 
                     
                         
@@ -376,7 +372,7 @@
             
 
             <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all"
-                     x-show="shouldShowModule('tinydocs/markers.py', 'markers', ["MarkerType", "Argument", "Marker to identify and split arguments for specific markers.", "pattern", "to_dict", "from_dict", "parse"])"
+                     x-show="shouldShowModule('tinydocs/markers.py', 'markers', ["Argument", "Marker to identify and split arguments for specific markers.", "pattern", "to_dict", "from_dict", "parse"])"
                      x-cloak>
                 
                 <div class="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
@@ -393,25 +389,6 @@
                     </div>
 
                     <div class="space-y-6">
-                        
-                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
-                             x-show="shouldShowChild('MarkerType', 'markers')">
-                            
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">enum</span>
-                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'MarkerType'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
-                                    MarkerType
-                                </h3>
-                            </div>
-
-                            <div class="ml-4 space-y-2 mt-2">
-                                
-                                    
-                                        <p class="text-gray-600 italic text-sm">Defines the various marker types</p>
-                                    
-                                
-                            </div>
-                        </div>
                         
                         <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
                              x-show="shouldShowChild('Argument', 'markers')">
@@ -467,13 +444,6 @@
                                         <div class="text-sm flex items-start gap-2">
                                             <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">name</code>
                                             <span class="text-gray-500">The name of the marker (e.g., 'param', 'method')</span>
-                                        </div>
-                                    
-                                
-                                    
-                                        <div class="text-sm flex items-start gap-2">
-                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">type</code>
-                                            <span class="text-gray-500">The category of the marker from MarkerType</span>
                                         </div>
                                     
                                 

@@ -2,56 +2,48 @@
     {
         "prefix": "@",
         "name": "module",
-        "type": "module",
         "arg": "required",
         "argc": 1
     },
     {
         "prefix": "@",
         "name": "class",
-        "type": "class",
         "arg": "required",
         "argc": 1
     },
     {
         "prefix": "@",
         "name": "enum",
-        "type": "class",
         "arg": "required",
         "argc": 1
     },
     {
         "prefix": "@",
         "name": "method",
-        "type": "function",
         "arg": "required",
         "argc": 1
     },
     {
         "prefix": "@",
         "name": "desc",
-        "type": "description",
         "arg": "required",
         "argc": 1
     },
     {
         "prefix": "@",
         "name": "param",
-        "type": "parameter",
         "arg": "required",
         "argc": 2
     },
     {
         "prefix": "@",
         "name": "constructor",
-        "type": "any",
         "arg": "none",
         "argc": 1
     },
     {
         "prefix": "@",
         "name": "returns",
-        "type": "return",
         "arg": "required",
         "argc": 1
     }
