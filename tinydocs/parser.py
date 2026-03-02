@@ -24,6 +24,7 @@ class Parser:
 
     # @method parse
     # @param markers The list of markers to look for while parsing 
+    # @returns List[Dict[str, Any]]
     def parse(self, markers: List[Marker]) -> List[Dict[str, Any]]:
         for marker in markers:
             if not marker.prefix:
@@ -43,14 +44,12 @@ class Parser:
             raw_line = line.strip()
             is_comment = re.match(rf'^{re.escape(self.comment)}', raw_line)
 
-            # 1. If it's not a comment, the current block is finished
             if not is_comment:
                 current_block = None
                 continue
 
             content = re.sub(rf'^{re.escape(self.comment)}\s*', '', raw_line).strip()
             
-            # 2. Check if this comment line starts a new @marker
             found_new_marker = False
             for marker in markers:
                 match = re.search(marker.pattern(), content)
@@ -70,15 +69,12 @@ class Parser:
                         "children": []
                     }
 
-                    # Logic: Is this a "Top Level" block or a sub-attribute?
-                    # Attributes like @param or @desc belong to the block above them
                     if marker.name in ["param", "desc", "arg", "returns"]:
                         if current_block:
                             current_block["children"].append(entry)
                         else:
                             all_blocks.append(entry) # Fallback if no parent
                     else:
-                        # This is a new primary block (like @class, @method, or @module)
                         if marker.name == "module":
                             module_node = entry
                         
