@@ -6,17 +6,20 @@ build-backend = "setuptools.build_meta"
 name = "tinydocs"
 dynamic = ["version"]
 authors = [
-  { name = "Konstantinos Despoinidis", email = "despoinidisk@gmail.com" },
+    { name = "Konstantinos Despoinidis", email = "despoinidisk@gmail.com" },
 ]
-description = ""
+description = "A tiny documentation generator"
 readme = "README.md"
 requires-python = ">=3.11"
 
 classifiers = [
-  "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
 ]
 
 dependencies = [
+    "Jinja2==3.1.6",
 ]
 
 [tool.setuptools.packages.find]
@@ -24,6 +27,9 @@ where = ["."]
 
 [tool.setuptools.dynamic]
 version = { attr = "tinydocs.__version__" }
+
+[tool.setuptools.package-data]
+tinydocs = ["templates/*.html.j2"]
 
 [project.scripts]
 tinydocs-cli = "tinydocs.cli:main"

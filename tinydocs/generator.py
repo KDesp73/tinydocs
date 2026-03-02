@@ -26,6 +26,7 @@ class SiteGenerator:
         # Render the template
         template = self.env.get_template('index.html.j2')
         output_html = template.render(
+            name=data.get("name"),
             timestamp=data.get("timestamp"),
             files=data.get("docs", [])
         )

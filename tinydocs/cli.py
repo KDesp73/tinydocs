@@ -18,8 +18,9 @@ def parse_arguments():
     parser.add_argument("--list-files", action="store_true", help="List the files included in the documentation generation")
     parser.add_argument("--comment-style", type=str, default="#", help="Specify the comment style (#, //, etc)")
     parser.add_argument("--markers", type=str, default="tiny.markers.json", help="Provide the marker definition json file")
-    parser.add_argument("-o", "--output", type=str, default="tiny.docs.json", help="Specify the output file")
+    parser.add_argument("-o", "--output", type=str, default="docs", help="Specify the output directory")
     parser.add_argument("--generate", action="store_true", help="Generate a static documentation site")
+    parser.add_argument("--name", type=str, help="Specify the name of the project")
 
     return parser.parse_args()
 
@@ -28,8 +29,6 @@ def main():
     args = parse_arguments()
 
     ignore_files = args.ignore.split(",") if args.ignore else []
-    ignore_files.append(".gitignore")
-    ignore_files.append(".tinyignore")
 
     ignore_checker = IgnoreChecker([".git/"])
     ignore_checker.load_ignore_files(ignore_files)
@@ -60,17 +59,19 @@ def main():
 
 
     output = {
+        "name": args.name or "TinyDocs", 
         "timestamp": str(datetime.now()).split(".")[0],
         "docs": docs
     }
 
     json_output = json.dumps(output, indent=4, ensure_ascii=False)
 
-    with open(args.output, "w") as file:
+    output_file = f"{args.output}/tiny.docs.json"
+    with open(output_file, "w") as file:
         file.write(json_output)
 
     if args.generate:
-        gen = SiteGenerator(args.output)
+        gen = SiteGenerator(json_path=output_file, output_dir=args.output)
         gen.generate()
 
 

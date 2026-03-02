@@ -45,9 +45,6 @@ class IgnoreChecker:
     # (e.g., '.gitignore' or '.eslintignore').
     # @param file_paths A list or comma-separated string of file paths to load.
     def load_ignore_files(self, file_paths):
-        if isinstance(file_paths, str):
-            file_paths = [f.strip() for f in file_paths.split(",") if f.strip()]
-
         for file_path in file_paths:
             if os.path.exists(file_path):
                 with open(file_path, 'r', encoding='utf-8') as f:
