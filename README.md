@@ -5,7 +5,7 @@
 ```bash
 # Build from source
 pip install build
-python -m build
+python3 -m build
 
 # Install
 pip install dist/tinydocs-*.whl
