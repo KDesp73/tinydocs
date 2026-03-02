@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinyDocs Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        .highlight { background-color: #fef08a; border-radius: 2px; padding: 0 2px; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans" x-data="{ 
+    search: '',
+    
+    shouldShowModule(file, module, children) {
+        if (!this.search) return true;
+        const s = this.search.toLowerCase();
+        if (file.toLowerCase().includes(s) || (module && module.toLowerCase().includes(s))) return true;
+        return Array.isArray(children) && children.some(c => c && c.toLowerCase().includes(s));
+    },
+
+    shouldShowChild(childName, moduleName) {
+        if (!this.search) return true;
+        const s = this.search.toLowerCase();
+        return (childName && childName.toLowerCase().includes(s)) || 
+               (moduleName && moduleName.toLowerCase().includes(s));
+    }
+}">
+
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-indigo-600">TinyDocs</h1>
+                <p class="text-xs text-gray-500 uppercase tracking-widest">Generated on 2026-03-02 21:02:25</p>
+            </div>
+            <div class="relative w-full md:w-96">
+                <input type="text" x-model="search" placeholder="Search modules, classes, or methods..." 
+                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
+                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 gap-8">
+            
+            
+            
+            
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+            
+            
+            
+
+            <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all"
+                     x-show="shouldShowModule('tinydocs/generator.py', 'generator', ["SiteGenerator", "generate"])"
+                     x-cloak>
+                
+                <div class="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
+                    <h2 class="font-mono text-sm" :class="search && 'tinydocs/generator.py'.toLowerCase().includes(search.toLowerCase()) ? 'text-yellow-300' : ''">tinydocs/generator.py</h2>
+                    <span class="text-xs text-gray-400">Line 1</span>
+                </div>
+
+                <div class="p-6">
+                    
+                    <div class="mb-6 flex items-center">
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded uppercase mr-2">module</span>
+                        <span class="text-xl font-bold" :class="search && 'generator'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                            generator
+                        </span>
+                    </div>
+
+                    <div class="space-y-6">
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('SiteGenerator', 'generator')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">class</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'SiteGenerator'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    SiteGenerator
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">Converts the TinyDocs JSON output into a searchable HTML static site.</p>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('generate', 'generator')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">method</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'generate'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    generate
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">Reads the JSON file and renders the Jinja2 template.</p>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </section>
+            
+            
+            
+            
+                
+                    
+                        
+                    
+                
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+            
+            
+            
+
+            <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all"
+                     x-show="shouldShowModule('tinydocs/ignore.py', 'ignore', ["IgnoreChecker should be ignored based on glob patterns, similar to .gitignore.", "add_pattern handling negations and directory-only constraints.", "load_ignore_files (e.g., \u0027.gitignore\u0027 or \u0027.eslintignore\u0027).", "is_ignored the full path, the basename, and all parent directories.", "filter that are not excluded by the ignore patterns."])"
+                     x-cloak>
+                
+                <div class="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
+                    <h2 class="font-mono text-sm" :class="search && 'tinydocs/ignore.py'.toLowerCase().includes(search.toLowerCase()) ? 'text-yellow-300' : ''">tinydocs/ignore.py</h2>
+                    <span class="text-xs text-gray-400">Line 1</span>
+                </div>
+
+                <div class="p-6">
+                    
+                    <div class="mb-6 flex items-center">
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded uppercase mr-2">module</span>
+                        <span class="text-xl font-bold" :class="search && 'ignore'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                            ignore
+                        </span>
+                    </div>
+
+                    <div class="space-y-6">
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('IgnoreChecker should be ignored based on glob patterns, similar to .gitignore.', 'ignore')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">class</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'IgnoreChecker should be ignored based on glob patterns, similar to .gitignore.'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    IgnoreChecker should be ignored based on glob patterns, similar to .gitignore.
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">This class provides utility methods to check if files or directories</p>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('', 'ignore')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">constructor</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && ''.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">patterns</code>
+                                            <span class="text-gray-500">A list of initial glob patterns to use for ignoring.</span>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('add_pattern handling negations and directory-only constraints.', 'ignore')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">method</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'add_pattern handling negations and directory-only constraints.'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    add_pattern handling negations and directory-only constraints.
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">Parses and adds a single ignore pattern to the internal list,</p>
+                                    
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">pattern</code>
+                                            <span class="text-gray-500">The glob string to add.</span>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('load_ignore_files (e.g., '.gitignore' or '.eslintignore').', 'ignore')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">method</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'load_ignore_files (e.g., '.gitignore' or '.eslintignore').'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    load_ignore_files (e.g., '.gitignore' or '.eslintignore').
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">Reads ignore patterns from one or more physical files</p>
+                                    
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">file_paths</code>
+                                            <span class="text-gray-500">A list or comma-separated string of file paths to load.</span>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('is_ignored the full path, the basename, and all parent directories.', 'ignore')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">method</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'is_ignored the full path, the basename, and all parent directories.'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    is_ignored the full path, the basename, and all parent directories.
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">Evaluates if a given path matches any ignore rules, checking</p>
+                                    
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">path</code>
+                                            <span class="text-gray-500">The file or directory path to check.</span>
+                                        </div>
+                                    
+                                
+                                    
+                                        <div class="text-sm border-t border-gray-100 pt-2 mt-2">
+                                            <span class="text-green-600 font-bold text-xs uppercase tracking-tight">Returns</span>
+                                            <code class="text-gray-700 block mt-1">bool True if the path should be ignored.</code>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('filter that are not excluded by the ignore patterns.', 'ignore')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">method</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'filter that are not excluded by the ignore patterns.'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    filter that are not excluded by the ignore patterns.
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">Recursively scans directories and returns a list of files</p>
+                                    
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">dirs</code>
+                                            <span class="text-gray-500">A comma-separated string of directory paths to scan.</span>
+                                        </div>
+                                    
+                                
+                                    
+                                        <div class="text-sm border-t border-gray-100 pt-2 mt-2">
+                                            <span class="text-green-600 font-bold text-xs uppercase tracking-tight">Returns</span>
+                                            <code class="text-gray-700 block mt-1">List[str] A sorted list of non-ignored file paths.</code>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </section>
+            
+            
+            
+            
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+            
+            
+            
+
+            <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all"
+                     x-show="shouldShowModule('tinydocs/markers.py', 'markers', ["MarkerType", "Argument", "Marker to identify and split arguments for specific markers.", "pattern", "to_dict", "from_dict", "parse"])"
+                     x-cloak>
+                
+                <div class="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
+                    <h2 class="font-mono text-sm" :class="search && 'tinydocs/markers.py'.toLowerCase().includes(search.toLowerCase()) ? 'text-yellow-300' : ''">tinydocs/markers.py</h2>
+                    <span class="text-xs text-gray-400">Line 1</span>
+                </div>
+
+                <div class="p-6">
+                    
+                    <div class="mb-6 flex items-center">
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded uppercase mr-2">module</span>
+                        <span class="text-xl font-bold" :class="search && 'markers'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                            markers
+                        </span>
+                    </div>
+
+                    <div class="space-y-6">
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('MarkerType', 'markers')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">enum</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'MarkerType'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    MarkerType
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">Defines the various marker types</p>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('Argument', 'markers')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">enum</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'Argument'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    Argument
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">Defines the argument necessity states</p>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('Marker to identify and split arguments for specific markers.', 'markers')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">class</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'Marker to identify and split arguments for specific markers.'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    Marker to identify and split arguments for specific markers.
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">Represents a documentation tag configuration, defining how</p>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('', 'markers')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">constructor</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && ''.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">name</code>
+                                            <span class="text-gray-500">The name of the marker (e.g., 'param', 'method')</span>
+                                        </div>
+                                    
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">type</code>
+                                            <span class="text-gray-500">The category of the marker from MarkerType</span>
+                                        </div>
+                                    
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">arg</code>
+                                            <span class="text-gray-500">Whether the marker requires an argument</span>
+                                        </div>
+                                    
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">argc</code>
+                                            <span class="text-gray-500">The number of expected arguments for splitting</span>
+                                        </div>
+                                    
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">prefix</code>
+                                            <span class="text-gray-500">The symbol prefix, usually '@'</span>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('pattern', 'markers')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">method</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'pattern'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    pattern
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">Generates a regex pattern to match the marker in a string</p>
+                                    
+                                
+                                    
+                                        <div class="text-sm border-t border-gray-100 pt-2 mt-2">
+                                            <span class="text-green-600 font-bold text-xs uppercase tracking-tight">Returns</span>
+                                            <code class="text-gray-700 block mt-1">str The compiled regex pattern</code>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('to_dict', 'markers')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">method</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'to_dict'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    to_dict
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">Serializes the marker instance into a dictionary</p>
+                                    
+                                
+                                    
+                                        <div class="text-sm border-t border-gray-100 pt-2 mt-2">
+                                            <span class="text-green-600 font-bold text-xs uppercase tracking-tight">Returns</span>
+                                            <code class="text-gray-700 block mt-1">Dict[str, Any]</code>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('from_dict', 'markers')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">method</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'from_dict'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    from_dict
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">d</code>
+                                            <span class="text-gray-500">The dictionary containing marker data</span>
+                                        </div>
+                                    
+                                
+                                    
+                                        <div class="text-sm border-t border-gray-100 pt-2 mt-2">
+                                            <span class="text-green-600 font-bold text-xs uppercase tracking-tight">Returns</span>
+                                            <code class="text-gray-700 block mt-1">Marker A new instance of Marker</code>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('parse', 'markers')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">method</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'parse'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    parse
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">json_str</code>
+                                            <span class="text-gray-500">A JSON string representing a list of markers</span>
+                                        </div>
+                                    
+                                
+                                    
+                                        <div class="text-sm border-t border-gray-100 pt-2 mt-2">
+                                            <span class="text-green-600 font-bold text-xs uppercase tracking-tight">Returns</span>
+                                            <code class="text-gray-700 block mt-1">List[Marker] A list of parsed Marker instances</code>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </section>
+            
+            
+            
+            
+                
+                    
+                        
+                    
+                
+                    
+                
+                    
+                        
+                    
+                
+            
+            
+            
+
+            <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all"
+                     x-show="shouldShowModule('tinydocs/parser.py', 'parser', ["Parser and parsing the doc attributes from a file", "parse"])"
+                     x-cloak>
+                
+                <div class="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
+                    <h2 class="font-mono text-sm" :class="search && 'tinydocs/parser.py'.toLowerCase().includes(search.toLowerCase()) ? 'text-yellow-300' : ''">tinydocs/parser.py</h2>
+                    <span class="text-xs text-gray-400">Line 1</span>
+                </div>
+
+                <div class="p-6">
+                    
+                    <div class="mb-6 flex items-center">
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded uppercase mr-2">module</span>
+                        <span class="text-xl font-bold" :class="search && 'parser'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                            parser
+                        </span>
+                    </div>
+
+                    <div class="space-y-6">
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('Parser and parsing the doc attributes from a file', 'parser')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">class</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'Parser and parsing the doc attributes from a file'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    Parser and parsing the doc attributes from a file
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <p class="text-gray-600 italic text-sm">This class is responsible for reading</p>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('', 'parser')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">constructor</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && ''.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">file</code>
+                                            <span class="text-gray-500">The file to parse</span>
+                                        </div>
+                                    
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">comment</code>
+                                            <span class="text-gray-500">The comment prefix (#, //, etc). Defaults to `#`</span>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('parse', 'parser')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">method</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && 'parse'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    parse
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                
+                                    
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">markers</code>
+                                            <span class="text-gray-500">The list of markers to look for while parsing</span>
+                                        </div>
+                                    
+                                
+                                    
+                                        <div class="text-sm border-t border-gray-100 pt-2 mt-2">
+                                            <span class="text-green-600 font-bold text-xs uppercase tracking-tight">Returns</span>
+                                            <code class="text-gray-700 block mt-1">List[Dict[str, Any]]</code>
+                                        </div>
+                                    
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </section>
+            
+        </div>
+        
+        <div x-show="search !== '' && !document.querySelectorAll('section[style*=\'display: block\']').length" 
+             class="text-center py-20" x-cloak>
+            <p class="text-gray-400 text-lg">No matches found for "<span x-text="search" class="font-bold"></span>"</p>
+        </div>
+    </main>
+
+</body>
+</html>

@@ -1,6 +1,52 @@
 {
-    "timestamp": "2026-03-02 20:37:18.767010",
+    "timestamp": "2026-03-02 21:02:25",
     "docs": [
+        {
+            "file": "tinydocs/generator.py",
+            "docs": {
+                "marker": "module",
+                "args": [
+                    "generator"
+                ],
+                "line": 1,
+                "children": [
+                    {
+                        "marker": "class",
+                        "args": [
+                            "SiteGenerator"
+                        ],
+                        "line": 6,
+                        "children": [
+                            {
+                                "marker": "desc",
+                                "args": [
+                                    "Converts the TinyDocs JSON output into a searchable HTML static site."
+                                ],
+                                "line": 7,
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "marker": "method",
+                        "args": [
+                            "generate"
+                        ],
+                        "line": 14,
+                        "children": [
+                            {
+                                "marker": "desc",
+                                "args": [
+                                    "Reads the JSON file and renders the Jinja2 template."
+                                ],
+                                "line": 15,
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         {
             "file": "tinydocs/ignore.py",
             "docs": {

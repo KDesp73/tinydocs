@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinyDocs Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        .highlight { background-color: #fef08a; border-radius: 2px; padding: 0 2px; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans" x-data="{ 
+    search: '',
+    
+    shouldShowModule(file, module, children) {
+        if (!this.search) return true;
+        const s = this.search.toLowerCase();
+        if (file.toLowerCase().includes(s) || (module && module.toLowerCase().includes(s))) return true;
+        return Array.isArray(children) && children.some(c => c && c.toLowerCase().includes(s));
+    },
+
+    shouldShowChild(childName, moduleName) {
+        if (!this.search) return true;
+        const s = this.search.toLowerCase();
+        return (childName && childName.toLowerCase().includes(s)) || 
+               (moduleName && moduleName.toLowerCase().includes(s));
+    }
+}">
+
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-indigo-600">TinyDocs</h1>
+                <p class="text-xs text-gray-500 uppercase tracking-widest">Generated on {{ timestamp }}</p>
+            </div>
+            <div class="relative w-full md:w-96">
+                <input type="text" x-model="search" placeholder="Search modules, classes, or methods..." 
+                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
+                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 gap-8">
+            {% for item in files %}
+            {# --- Defensive Data Preparation --- #}
+            {% set children_list = [] %}
+            {% if item.docs and item.docs.children %}
+                {% for child in item.docs.children %}
+                    {% if child.args and child.args[0] %}
+                        {% set _ = children_list.append(child.args[0]) %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% set module_name = item.docs.args[0] if (item.docs and item.docs.args) else "Unknown" %}
+            {# ---------------------------------- #}
+
+            <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all"
+                     x-show="shouldShowModule('{{ item.file }}', '{{ module_name }}', {{ children_list | tojson }})"
+                     x-cloak>
+                
+                <div class="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
+                    <h2 class="font-mono text-sm" :class="search && '{{ item.file }}'.toLowerCase().includes(search.toLowerCase()) ? 'text-yellow-300' : ''">{{ item.file }}</h2>
+                    <span class="text-xs text-gray-400">Line {{ item.docs.line if item.docs else '0' }}</span>
+                </div>
+
+                <div class="p-6">
+                    {% if item.docs %}
+                    <div class="mb-6 flex items-center">
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded uppercase mr-2">{{ item.docs.marker }}</span>
+                        <span class="text-xl font-bold" :class="search && '{{ module_name }}'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                            {{ module_name }}
+                        </span>
+                    </div>
+
+                    <div class="space-y-6">
+                        {% for child in item.docs.children %}
+                        <div class="border-l-4 border-indigo-200 pl-4 py-1 transition-all"
+                             x-show="shouldShowChild('{{ child.args[0] }}', '{{ module_name }}')">
+                            
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600 uppercase">{{ child.marker }}</span>
+                                <h3 class="font-bold text-gray-800 text-lg" :class="search && '{{ child.args[0] }}'.toLowerCase().includes(search.toLowerCase()) ? 'bg-yellow-200' : ''">
+                                    {{ child.args[0] }}
+                                </h3>
+                            </div>
+
+                            <div class="ml-4 space-y-2 mt-2">
+                                {% for meta in child.children %}
+                                    {% if meta.marker == 'desc' %}
+                                        <p class="text-gray-600 italic text-sm">{{ meta.args[0] }}</p>
+                                    {% elif meta.marker == 'param' %}
+                                        <div class="text-sm flex items-start gap-2">
+                                            <code class="text-pink-600 font-bold px-1 bg-pink-50 rounded">{{ meta.args[0] }}</code>
+                                            <span class="text-gray-500">{{ meta.args[1] }}</span>
+                                        </div>
+                                    {% elif meta.marker == 'returns' %}
+                                        <div class="text-sm border-t border-gray-100 pt-2 mt-2">
+                                            <span class="text-green-600 font-bold text-xs uppercase tracking-tight">Returns</span>
+                                            <code class="text-gray-700 block mt-1">{{ meta.args[0] }}</code>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-gray-400 italic">No documentation found for this file.</p>
+                    {% endif %}
+                </div>
+            </section>
+            {% endfor %}
+        </div>
+        
+        <div x-show="search !== '' && !document.querySelectorAll('section[style*=\'display: block\']').length" 
+             class="text-center py-20" x-cloak>
+            <p class="text-gray-400 text-lg">No matches found for "<span x-text="search" class="font-bold"></span>"</p>
+        </div>
+    </main>
+
+</body>
+</html>

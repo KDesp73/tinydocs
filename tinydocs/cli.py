@@ -6,6 +6,7 @@ from pathlib import Path
 from .ignore import IgnoreChecker
 from .parser import Parser
 from .markers import Marker
+from .generator import SiteGenerator
 from datetime import datetime
 
 
@@ -18,6 +19,7 @@ def parse_arguments():
     parser.add_argument("--comment-style", type=str, default="#", help="Specify the comment style (#, //, etc)")
     parser.add_argument("--markers", type=str, default="tiny.markers.json", help="Provide the marker definition json file")
     parser.add_argument("-o", "--output", type=str, default="tiny.docs.json", help="Specify the output file")
+    parser.add_argument("--generate", action="store_true", help="Generate a static documentation site")
 
     return parser.parse_args()
 
@@ -58,7 +60,7 @@ def main():
 
 
     output = {
-        "timestamp": str(datetime.now()),
+        "timestamp": str(datetime.now()).split(".")[0],
         "docs": docs
     }
 
@@ -66,6 +68,10 @@ def main():
 
     with open(args.output, "w") as file:
         file.write(json_output)
+
+    if args.generate:
+        gen = SiteGenerator(args.output)
+        gen.generate()
 
 
 if __name__ == "__main__":
