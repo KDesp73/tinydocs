@@ -1,6 +1,6 @@
 {
     "name": "tinydocs",
-    "timestamp": "2026-03-03 13:03:35",
+    "timestamp": "2026-03-03 13:40:49",
     "docs": [
         {
             "file": "tinydocs/generator.py",
@@ -28,6 +28,15 @@
                                 ],
                                 "line": 7,
                                 "children": []
+                            },
+                            {
+                                "marker": "example",
+                                "type": "example",
+                                "args": [
+                                    "gen = SiteGenerator(\"tiny.docs.json\")\ngen.generate()"
+                                ],
+                                "line": 9,
+                                "children": []
                             }
                         ]
                     },
@@ -37,7 +46,7 @@
                         "args": [
                             "generate"
                         ],
-                        "line": 14,
+                        "line": 17,
                         "children": [
                             {
                                 "marker": "desc",
@@ -45,7 +54,7 @@
                                 "args": [
                                     "Reads the JSON file and renders the Jinja2 template."
                                 ],
-                                "line": 15,
+                                "line": 18,
                                 "children": []
                             }
                         ]
@@ -75,7 +84,7 @@
                                 "marker": "desc",
                                 "type": "description",
                                 "args": [
-                                    "This class provides utility methods to check if files or directories"
+                                    "This class provides utility methods to check if files or directories should be ignored based on glob patterns, similar to .gitignore."
                                 ],
                                 "line": 9,
                                 "children": []
@@ -112,7 +121,7 @@
                                 "marker": "desc",
                                 "type": "description",
                                 "args": [
-                                    "Parses and adds a single ignore pattern to the internal list,"
+                                    "Parses and adds a single ignore pattern to the internal list, handling negations and directory-only constraints."
                                 ],
                                 "line": 21,
                                 "children": []
@@ -141,7 +150,7 @@
                                 "marker": "desc",
                                 "type": "description",
                                 "args": [
-                                    "Reads ignore patterns from one or more physical files"
+                                    "Reads ignore patterns from one or more physical files (e.g., '.gitignore' or '.eslintignore')."
                                 ],
                                 "line": 44,
                                 "children": []
@@ -170,7 +179,7 @@
                                 "marker": "desc",
                                 "type": "description",
                                 "args": [
-                                    "Evaluates if a given path matches any ignore rules, checking"
+                                    "Evaluates if a given path matches any ignore rules, checking the full path, the basename, and all parent directories."
                                 ],
                                 "line": 55,
                                 "children": []
@@ -208,7 +217,7 @@
                                 "marker": "desc",
                                 "type": "description",
                                 "args": [
-                                    "Recursively scans directories and returns a list of files"
+                                    "Recursively scans directories and returns a list of files that are not excluded by the ignore patterns."
                                 ],
                                 "line": 97,
                                 "children": []
@@ -297,7 +306,7 @@
                                 "marker": "desc",
                                 "type": "description",
                                 "args": [
-                                    "Represents a documentation tag configuration, defining how"
+                                    "Represents a documentation tag configuration, defining how to identify and split arguments for specific markers."
                                 ],
                                 "line": 32,
                                 "children": []
@@ -491,7 +500,7 @@
                                 "marker": "desc",
                                 "type": "description",
                                 "args": [
-                                    "This class is responsible for reading"
+                                    "This class is responsible for reading and parsing the doc attributes from a file"
                                 ],
                                 "line": 9,
                                 "children": []

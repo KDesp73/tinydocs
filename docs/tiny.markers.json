@@ -54,5 +54,12 @@
         "type": "return",
         "arg": "required",
         "argc": 1
+    },
+    {
+        "prefix": "@",
+        "name": "example",
+        "type": "example",
+        "arg": "required",
+        "argc": 1
     }
 ]

@@ -29,6 +29,7 @@
         /* Smooth transition for theme switching */
         body { transition: background-color 0.3s ease, color 0.3s ease; }
         .highlight { @apply bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded px-1 ring-1 ring-indigo-200 dark:ring-indigo-800; }
+        pre { @apply overflow-x-auto p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-sm border border-slate-800 shadow-inner my-4; }
     </style>
 </head>
 
@@ -134,6 +135,15 @@
                                     
                                     
                                 
+                                    
+                                        <div class="space-y-2">
+                                            <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Example Usage</span>
+                                            <pre><code>gen = SiteGenerator("tiny.docs.json")
+gen.generate()</code></pre>
+                                        </div>
+
+                                    
+                                
                             </div>
                         </div>
                     </div>
@@ -153,7 +163,7 @@
                                     generate
                                 </h3>
                                 
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 14</span>
+                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 17</span>
                             </div>
 
                             <div class="space-y-4">
@@ -234,7 +244,7 @@
                             <div class="space-y-4">
                                 
                                     
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">This class provides utility methods to check if files or directories</p>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">This class provides utility methods to check if files or directories should be ignored based on glob patterns, similar to .gitignore.</p>
                                     
                                     
                                 
@@ -297,7 +307,7 @@
                             <div class="space-y-4">
                                 
                                     
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Parses and adds a single ignore pattern to the internal list,</p>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Parses and adds a single ignore pattern to the internal list, handling negations and directory-only constraints.</p>
                                     
                                     
                                 
@@ -336,7 +346,7 @@
                             <div class="space-y-4">
                                 
                                     
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Reads ignore patterns from one or more physical files</p>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Reads ignore patterns from one or more physical files (e.g., '.gitignore' or '.eslintignore').</p>
                                     
                                     
                                 
@@ -375,7 +385,7 @@
                             <div class="space-y-4">
                                 
                                     
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Evaluates if a given path matches any ignore rules, checking</p>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Evaluates if a given path matches any ignore rules, checking the full path, the basename, and all parent directories.</p>
                                     
                                     
                                 
@@ -394,6 +404,7 @@
                                             <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
                                             <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">bool True if the path should be ignored.</code>
                                         </div>
+
                                     
                                 
                             </div>
@@ -421,7 +432,7 @@
                             <div class="space-y-4">
                                 
                                     
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Recursively scans directories and returns a list of files</p>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Recursively scans directories and returns a list of files that are not excluded by the ignore patterns.</p>
                                     
                                     
                                 
@@ -440,6 +451,7 @@
                                             <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
                                             <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">List[str] A sorted list of non-ignored file paths.</code>
                                         </div>
+
                                     
                                 
                             </div>
@@ -575,7 +587,7 @@
                             <div class="space-y-4">
                                 
                                     
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Represents a documentation tag configuration, defining how</p>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Represents a documentation tag configuration, defining how to identify and split arguments for specific markers.</p>
                                     
                                     
                                 
@@ -677,6 +689,7 @@
                                             <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
                                             <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">str The compiled regex pattern</code>
                                         </div>
+
                                     
                                 
                             </div>
@@ -713,6 +726,7 @@
                                             <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
                                             <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">Dict[str, Any]</code>
                                         </div>
+
                                     
                                 
                             </div>
@@ -754,6 +768,7 @@
                                             <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
                                             <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">Marker A new instance of Marker</code>
                                         </div>
+
                                     
                                 
                             </div>
@@ -795,6 +810,7 @@
                                             <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
                                             <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">List[Marker] A list of parsed Marker instances</code>
                                         </div>
+
                                     
                                 
                             </div>
@@ -862,7 +878,7 @@
                             <div class="space-y-4">
                                 
                                     
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">This class is responsible for reading</p>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">This class is responsible for reading and parsing the doc attributes from a file</p>
                                     
                                     
                                 
@@ -949,6 +965,7 @@
                                             <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
                                             <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">List[Dict[str, Any]]</code>
                                         </div>
+
                                     
                                 
                             </div>

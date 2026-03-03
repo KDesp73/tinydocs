@@ -5,6 +5,9 @@ from jinja2 import Environment, FileSystemLoader
 
 # @class SiteGenerator
 # @desc Converts the TinyDocs JSON output into a searchable HTML static site.
+#
+# @example gen = SiteGenerator("tiny.docs.json")
+# gen.generate()
 class SiteGenerator:
     def __init__(self, json_path: str, output_dir: str = "docs"):
         self.json_path = Path(json_path)
