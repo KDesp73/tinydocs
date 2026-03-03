@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ darkMode: localStorage.getItem('theme') === 'dark' }" :class="{ 'dark': darkMode }">
+<html lang="en" x-data="docApp()" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tinydocs Documentation</title>
+    <title x-text="`${projectData.name || 'Loading...'} Documentation`"></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
@@ -13,49 +13,62 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#f5f7ff',
-                            100: '#ebf0fe',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            900: '#312e81',
+                            50: '#f5f7ff', 100: '#ebf0fe', 500: '#6366f1', 600: '#4f46e5', 900: '#312e81',
                         }
                     }
+                }
+            }
+        }
+
+        function docApp() {
+            return {
+                darkMode: localStorage.getItem('theme') === 'dark',
+                search: '',
+                projectData: { name: '', docs: [], timestamp: '' },
+                
+                async init() {
+                    try {
+                        const response = await fetch('tiny.docs.json');
+                        this.projectData = await response.json();
+                    } catch (e) {
+                        console.error("Failed to load documentation JSON", e);
+                    }
+                },
+
+                toggleTheme() {
+                    this.darkMode = !this.darkMode;
+                    localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
+                },
+
+                match(text) {
+                    if (!this.search || !text) return false;
+                    return String(text).toLowerCase().includes(this.search.toLowerCase());
+                },
+
+                shouldShowModule(item) {
+                    if (!this.search) return true;
+                    const moduleName = item.docs?.args?.[0] || "";
+                    if (this.match(item.file) || this.match(moduleName)) return true;
+                    return item.docs?.children?.some(child => this.match(child.args?.[0])) ?? false;
                 }
             }
         }
     </script>
     <style>
         [x-cloak] { display: none !important; }
-        /* Smooth transition for theme switching */
         body { transition: background-color 0.3s ease, color 0.3s ease; }
         .highlight { @apply bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded px-1 ring-1 ring-indigo-200 dark:ring-indigo-800; }
         pre { @apply overflow-x-auto p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-sm border border-slate-800 shadow-inner my-4; }
     </style>
 </head>
 
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans"
-      x-data="{ 
-        search: '',
-        toggleTheme() {
-            this.darkMode = !this.darkMode;
-            localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
-        },
-        match(text) {
-            if (!this.search) return true;
-            return String(text).toLowerCase().includes(this.search.toLowerCase());
-        },
-        shouldShowModule(file, name, childrenArray) {
-            if (!this.search) return true;
-            if (this.match(file) || this.match(name)) return true;
-            return childrenArray.some(childName => this.match(childName));
-        }
-      }">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans">
 
 <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div class="flex items-center gap-3">
             <div>
-                <h1 class="text-xl font-black text-slate-800 dark:text-white tracking-tight">tinydocs</h1>
+                <h1 class="text-xl font-black text-slate-800 dark:text-white tracking-tight" x-text="projectData.name"></h1>
                 <p class="text-[9px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-[0.3em]">API Documentation</p>
             </div>
         </div>
@@ -73,912 +86,109 @@
     </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-6 py-12">
-    <div class="space-y-24">
-        
-        
-        
-        
-        
-            
-                
-            
-                
-            
-        
-
-        <section x-show="shouldShowModule('tinydocs/generator.py', 'generator', ["SiteGenerator", "generate"])" x-cloak class="relative">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 group">
-                <div class="space-y-1">
-                    <div class="flex items-center gap-2">
-                        <span class="h-px w-8 bg-indigo-500"></span>
-                        <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Module Package</span>
+<main class="max-w-7xl mx-auto px-6 pt-4 pb-12">
+    <div class="space-y-12">
+        <template x-for="item in projectData.docs" :key="item.file">
+            <section x-show="shouldShowModule(item)" x-cloak class="relative">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 group">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="h-px w-8 bg-indigo-500"></span>
+                            <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Module Package</span>
+                        </div>
+                        <h2 class="text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white" 
+                            :class="match(item.docs?.args?.[0]) && 'highlight'"
+                            x-text="item.docs?.args?.[0] || 'Unknown'">
+                        </h2>
                     </div>
-                    <h2 class="text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white" :class="match('generator') && 'highlight'">
-                        generator
-                    </h2>
+                    <div class="flex flex-col items-end">
+                        <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full text-xs font-mono border border-slate-200 dark:border-slate-700" 
+                              :class="match(item.file) && 'highlight'"
+                              x-text="item.file">
+                        </span>
+                    </div>
                 </div>
-                <div class="flex flex-col items-end">
-                    <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full text-xs font-mono border border-slate-200 dark:border-slate-700" :class="match('tinydocs/generator.py') && 'highlight'">
-                        tinydocs/generator.py
-                    </span>
+
+                <div class="grid grid-cols-1 gap-10 relative">
+                    <div class="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-500 via-slate-200 dark:via-slate-800 to-transparent ml-4 hidden md:block"></div>
+
+                    <template x-for="child in item.docs?.children || []" :key="child.line">
+                        <div class="relative pl-0 md:pl-12 group" x-show="!search || match(child.args?.[0]) || match(item.docs?.args?.[0]) || match(item.file)">
+                            <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
+
+                            <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex flex-wrap items-center gap-3 mb-6">
+                                    <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider"
+                                          :class="{
+                                            'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400': child.type === 'class',
+                                            'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400': child.type === 'function',
+                                            'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300': child.type === 'type',
+                                            'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400': !['class','function','type'].includes(child.type)
+                                          }" x-text="child.marker">
+                                    </span>
+                                    
+                                    <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" 
+                                        :class="match(child.args?.[0]) && 'highlight'"
+                                        x-text="child.args?.[0]">
+                                    </h3>
+                                    
+                                    <span class="text-[10px] font-mono text-slate-400 ml-auto" x-text="`Line ${child.line}`"></span>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <template x-for="meta in child.children" :key="JSON.stringify(meta)">
+                                        <div>
+                                            <template x-if="meta.type === 'description'">
+                                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base" x-text="meta.args[0]"></p>
+                                            </template>
+
+                                            <template x-if="meta.type === 'example'">
+                                                <div class="space-y-2">
+                                                    <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest" x-text="meta.marker"></span>
+                                                    <pre><code x-text="meta.args[0]"></code></pre>
+                                                </div>
+                                            </template>
+
+                                            <template x-if="meta.type === 'parameter'">
+                                                <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+                                                    <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0" x-text="meta.marker"></span>
+                                                    <code class="text-pink-600 dark:text-pink-400 font-bold text-sm" x-text="meta.args[0]"></code>
+                                                    <span class="text-slate-400 text-xs">—</span>
+                                                    <span class="text-slate-500 dark:text-slate-400 italic text-xs" x-text="meta.args[1]"></span>
+                                                </div>
+                                            </template>
+
+                                            <template x-if="meta.type === 'return'">
+                                                <div class="flex items-center gap-5 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                                    <span class="text-[9px] font-black uppercase text-emerald-500 w-10 shrink-0" x-text="meta.marker"></span>
+                                                    <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm" x-text="meta.args[0]"></code>
+                                                    <span class="text-slate-400 text-xs">—</span>
+                                                    <span class="text-slate-500 dark:text-slate-400 italic text-xs" x-text="meta.args[1]"></span>
+                                                </div>
+                                            </template>
+
+                                            <template x-if="['author', 'license'].includes(meta.type)">
+                                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] text-slate-500">
+                                                    <span class="font-bold uppercase opacity-60" x-text="`${meta.marker}:`"></span>
+                                                    <span class="font-medium" x-text="meta.args[0]"></span>
+                                                </div>
+                                            </template>
+
+                                            <template x-if="meta.type === 'any'">
+                                                <div class="p-4 border-l-2 border-indigo-200 dark:border-indigo-800 bg-slate-50/50 dark:bg-slate-800/20 italic text-slate-500 text-sm" x-text="meta.args[0]"></div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-10 relative">
-                <div class="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-500 via-slate-200 dark:via-slate-800 to-transparent ml-4 hidden md:block"></div>
-
-                
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('SiteGenerator') || match('generator') || match('tinydocs/generator.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
-                                    ">
-                                    class
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('SiteGenerator') && 'highlight'">
-                                    SiteGenerator
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 6</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Converts the TinyDocs JSON output into a searchable HTML static site.</p>
-                                    
-                                    
-                                
-                                    
-                                        <div class="space-y-2">
-                                            <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">example</span>
-                                            <pre><code>gen = SiteGenerator("tiny.docs.json")
-gen.generate()</code></pre>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('generate') || match('generator') || match('tinydocs/generator.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    method
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('generate') && 'highlight'">
-                                    generate
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 17</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Reads the JSON file and renders the Jinja2 template.</p>
-                                    
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                
-            </div>
-        </section>
-        
-        
-        
-        
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-
-        <section x-show="shouldShowModule('tinydocs/ignore.py', 'ignore', ["IgnoreChecker", "add_pattern", "load_ignore_files", "is_ignored", "filter"])" x-cloak class="relative">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 group">
-                <div class="space-y-1">
-                    <div class="flex items-center gap-2">
-                        <span class="h-px w-8 bg-indigo-500"></span>
-                        <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Module Package</span>
-                    </div>
-                    <h2 class="text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white" :class="match('ignore') && 'highlight'">
-                        ignore
-                    </h2>
-                </div>
-                <div class="flex flex-col items-end">
-                    <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full text-xs font-mono border border-slate-200 dark:border-slate-700" :class="match('tinydocs/ignore.py') && 'highlight'">
-                        tinydocs/ignore.py
-                    </span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-10 relative">
-                <div class="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-500 via-slate-200 dark:via-slate-800 to-transparent ml-4 hidden md:block"></div>
-
-                
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('IgnoreChecker') || match('ignore') || match('tinydocs/ignore.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
-                                    ">
-                                    class
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('IgnoreChecker') && 'highlight'">
-                                    IgnoreChecker
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 8</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">This class provides utility methods to check if files or directories should be ignored based on glob patterns, similar to .gitignore.</p>
-                                    
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('') || match('ignore') || match('tinydocs/ignore.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    constructor
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('') && 'highlight'">
-                                    
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 12</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">patterns</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">A list of initial glob patterns to use for ignoring.</span>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('add_pattern') || match('ignore') || match('tinydocs/ignore.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    method
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('add_pattern') && 'highlight'">
-                                    add_pattern
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 20</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Parses and adds a single ignore pattern to the internal list, handling negations and directory-only constraints.</p>
-                                    
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">pattern</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">The glob string to add.</span>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('load_ignore_files') || match('ignore') || match('tinydocs/ignore.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    method
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('load_ignore_files') && 'highlight'">
-                                    load_ignore_files
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 43</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Reads ignore patterns from one or more physical files (e.g., '.gitignore' or '.eslintignore').</p>
-                                    
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">file_paths</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">A list or comma-separated string of file paths to load.</span>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('is_ignored') || match('ignore') || match('tinydocs/ignore.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    method
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('is_ignored') && 'highlight'">
-                                    is_ignored
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 54</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Evaluates if a given path matches any ignore rules, checking the full path, the basename, and all parent directories.</p>
-                                    
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">path</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">The file or directory path to check.</span>
-                                        </div>
-
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-5 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
-                                            <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">bool True if the path should be ignored.</code>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('filter') || match('ignore') || match('tinydocs/ignore.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    method
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('filter') && 'highlight'">
-                                    filter
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 96</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Recursively scans directories and returns a list of files that are not excluded by the ignore patterns.</p>
-                                    
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">dirs</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">A comma-separated string of directory paths to scan.</span>
-                                        </div>
-
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-5 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
-                                            <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">List[str] A sorted list of non-ignored file paths.</code>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                
-            </div>
-        </section>
-        
-        
-        
-        
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-
-        <section x-show="shouldShowModule('tinydocs/markers.py', 'markers', ["Argument", "MarkerType", "Marker", "pattern", "to_dict", "from_dict", "parse"])" x-cloak class="relative">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 group">
-                <div class="space-y-1">
-                    <div class="flex items-center gap-2">
-                        <span class="h-px w-8 bg-indigo-500"></span>
-                        <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Module Package</span>
-                    </div>
-                    <h2 class="text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white" :class="match('markers') && 'highlight'">
-                        markers
-                    </h2>
-                </div>
-                <div class="flex flex-col items-end">
-                    <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full text-xs font-mono border border-slate-200 dark:border-slate-700" :class="match('tinydocs/markers.py') && 'highlight'">
-                        tinydocs/markers.py
-                    </span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-10 relative">
-                <div class="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-500 via-slate-200 dark:via-slate-800 to-transparent ml-4 hidden md:block"></div>
-
-                
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('Argument') || match('markers') || match('tinydocs/markers.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
-                                    ">
-                                    enum
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('Argument') && 'highlight'">
-                                    Argument
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 8</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Defines the argument necessity states</p>
-                                    
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('MarkerType') || match('markers') || match('tinydocs/markers.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
-                                    ">
-                                    enum
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('MarkerType') && 'highlight'">
-                                    MarkerType
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 15</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Defines the various types of markers</p>
-                                    
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('Marker') || match('markers') || match('tinydocs/markers.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
-                                    ">
-                                    class
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('Marker') && 'highlight'">
-                                    Marker
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 31</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Represents a documentation tag configuration, defining how to identify and split arguments for specific markers.</p>
-                                    
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('') || match('markers') || match('tinydocs/markers.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    constructor
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('') && 'highlight'">
-                                    
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 35</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">name</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">The name of the marker (e.g., 'param', 'method')</span>
-                                        </div>
-
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">arg</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">Whether the marker requires an argument</span>
-                                        </div>
-
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">argc</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">The number of expected arguments for splitting</span>
-                                        </div>
-
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">prefix</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">The symbol prefix, usually '@'</span>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('pattern') || match('markers') || match('tinydocs/markers.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    method
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('pattern') && 'highlight'">
-                                    pattern
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 54</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Generates a regex pattern to match the marker in a string</p>
-                                    
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-5 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
-                                            <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">str The compiled regex pattern</code>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('to_dict') || match('markers') || match('tinydocs/markers.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    method
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('to_dict') && 'highlight'">
-                                    to_dict
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 68</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">Serializes the marker instance into a dictionary</p>
-                                    
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-5 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
-                                            <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">Dict[str, Any]</code>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('from_dict') || match('markers') || match('tinydocs/markers.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    method
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('from_dict') && 'highlight'">
-                                    from_dict
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 80</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">d</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">The dictionary containing marker data</span>
-                                        </div>
-
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-5 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
-                                            <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">Marker A new instance of Marker</code>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('parse') || match('markers') || match('tinydocs/markers.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    method
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('parse') && 'highlight'">
-                                    parse
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 96</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">json_str</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">A JSON string representing a list of markers</span>
-                                        </div>
-
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-5 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
-                                            <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">List[Marker] A list of parsed Marker instances</code>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                
-            </div>
-        </section>
-        
-        
-        
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-
-        <section x-show="shouldShowModule('tinydocs/parser.py', 'parser', ["Parser", "parse"])" x-cloak class="relative">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 group">
-                <div class="space-y-1">
-                    <div class="flex items-center gap-2">
-                        <span class="h-px w-8 bg-indigo-500"></span>
-                        <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Module Package</span>
-                    </div>
-                    <h2 class="text-5xl font-extrabold tracking-tighter text-slate-900 dark:text-white" :class="match('parser') && 'highlight'">
-                        parser
-                    </h2>
-                </div>
-                <div class="flex flex-col items-end">
-                    <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full text-xs font-mono border border-slate-200 dark:border-slate-700" :class="match('tinydocs/parser.py') && 'highlight'">
-                        tinydocs/parser.py
-                    </span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-10 relative">
-                <div class="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-500 via-slate-200 dark:via-slate-800 to-transparent ml-4 hidden md:block"></div>
-
-                
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('Parser') || match('parser') || match('tinydocs/parser.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
-                                    ">
-                                    class
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('Parser') && 'highlight'">
-                                    Parser
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 8</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">This class is responsible for reading and parsing the doc attributes from a file</p>
-                                    
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('') || match('parser') || match('tinydocs/parser.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    constructor
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('') && 'highlight'">
-                                    
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 12</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">file</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">The file to parse</span>
-                                        </div>
-
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">comment</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">The comment prefix (#, //, etc). Defaults to `#`</span>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="relative pl-0 md:pl-12 group" x-show="match('parse') || match('parser') || match('tinydocs/parser.py')">
-                        <div class="absolute left-[-5px] top-4 w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 border-2 border-indigo-500 hidden md:block group-hover:scale-125 transition-transform"></div>
-
-                        <div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-wrap items-center gap-3 mb-6">
-                                <span class="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider
-                                     bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                                    ">
-                                    method
-                                </span>
-                                
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight" :class="match('parse') && 'highlight'">
-                                    parse
-                                </h3>
-                                
-                                <span class="text-[10px] font-mono text-slate-400 ml-auto">Line 25</span>
-                            </div>
-
-                            <div class="space-y-4">
-                                
-                                    
-                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-pink-500 w-8 shrink-0">param</span>
-                                            <code class="text-pink-600 dark:text-pink-400 font-bold text-sm">markers</code>
-                                            <span class="text-slate-400 text-xs">—</span>
-                                            <span class="text-slate-500 dark:text-slate-400 italic text-xs">The list of markers to look for while parsing</span>
-                                        </div>
-
-                                    
-                                
-                                    
-                                        <div class="flex items-center gap-5 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                            <span class="text-[9px] font-black uppercase text-emerald-500 w-8 shrink-0">returns</span>
-                                            <code class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">List[Dict[str, Any]]</code>
-                                        </div>
-
-                                    
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
-                
-            </div>
-        </section>
-        
+            </section>
+        </template>
     </div>
 
-    <div x-show="search && !$root.querySelectorAll('section:not([style*=\'display: none\'])').length" class="py-32 text-center" x-cloak>
+    <div x-show="search && !document.querySelectorAll('section[style*=\'display: block\'], section:not([style*=\'display: none\'])').length" class="py-32 text-center" x-cloak>
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 mb-6 text-slate-400">
             <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
@@ -991,7 +201,7 @@ gen.generate()</code></pre>
 </main>
 
 <footer class="max-w-7xl mx-auto px-6 py-12 border-t border-slate-200 dark:border-slate-800 text-center">
-    <p class="text-slate-400 text-xs font-medium">Generated with tinydocs • 2026</p>
+    <p class="text-slate-400 text-xs font-medium" x-text="`Generated with tinydocs • ${projectData.timestamp}`"></p>
 </footer>
 
 </body>

@@ -27,7 +27,6 @@ class MarkerType(Enum):
     LICENSE = "license"
     ANY = "any"
 
-
 # @class Marker
 # @desc Represents a documentation tag configuration, defining how 
 # to identify and split arguments for specific markers.
@@ -40,7 +39,7 @@ class Marker:
     def __init__(
         self,
         name: str,
-        type: Optional[MarkerType] = MarkerType.ANY,
+        type: MarkerType = MarkerType.ANY,
         arg: Optional[Argument] = Argument.REQUIRED,
         argc: Optional[int] = 1,
         prefix: Optional[str] = None,
@@ -100,8 +99,17 @@ class Marker:
     def parse(json_str: str) -> List["Marker"]:
         try:
             data = json.loads(json_str)
-            if not isinstance(data, list):
-                raise ValueError("JSON must be a list of marker objects")
-            return [Marker.from_dict(item) for item in data]
+            
+            prefix = data.get("prefix", "@")
+            markers_raw = data.get("markers", [])
+
+            if not isinstance(markers_raw, list):
+                raise ValueError("'markers' must be a list of marker objects")
+
+            for marker_dict in markers_raw:
+                marker_dict["prefix"] = prefix
+
+            return [Marker.from_dict(item) for item in markers_raw]
+
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid JSON provided: {e}")

@@ -34,9 +34,9 @@ class Parser:
         text = self.file.read_text()
         lines = text.split("\n")
 
-        all_blocks = []
-        current_block = None  # Structural parent (Module, Class, Function)
-        module_node = None
+        final_modules = []    # List of all modules found in the file
+        active_module = None  # The current module scope
+        current_block = None  # The specific item (Class/Method) for metadata
 
         METADATA_MARKERS = {
             MarkerType.PARAMETER.value,
@@ -63,12 +63,14 @@ class Parser:
 
             # Strip comment and whitespace
             content = re.sub(rf"^{re.escape(self.comment)}\s*", "", raw_line).strip()
-            if not content: continue
+            if not content:
+                continue
 
             found_new_marker = False
             for marker in markers:
                 match = re.match(marker.pattern(), content)
-                if not match: continue
+                if not match:
+                    continue
 
                 found_new_marker = True
                 args = []
@@ -91,39 +93,47 @@ class Parser:
                     "children": []
                 }
 
-                # Hierarchy Logic
+                # --- Hierarchy Logic ---
                 if marker.type.value in METADATA_MARKERS:
+                    # Metadata always belongs to the last defined structural block
                     if current_block:
                         current_block["children"].append(entry)
+                    elif active_module:
+                        # Fallback: if no class/method is active, it belongs to the module
+                        active_module["children"].append(entry)
                     else:
-                        all_blocks.append(entry)
+                        # Orphan metadata at top of file
+                        final_modules.append(entry)
+                
+                elif marker.name == "module":
+                    # A new module starts a new scope for everything below it
+                    active_module = entry
+                    final_modules.append(active_module)
+                    current_block = active_module
+                
                 else:
-                    # This is a structural marker (Module, Class, Function, etc.)
-                    if marker.name == "module":
-                        module_node = entry
+                    # This is a structural marker (Class, Function, Struct, etc.)
+                    if active_module:
+                        # Nest this block inside the current active module
+                        active_module["children"].append(entry)
+                    else:
+                        # If no module defined yet, it's a top-level block
+                        final_modules.append(entry)
                     
-                    all_blocks.append(entry)
-                    current_block = entry # New context for subsequent metadata markers
+                    # Update current_block so subsequent metadata belongs here
+                    current_block = entry
                 break
 
-            # Multiline Handling
+            # --- Multiline Handling ---
             if not found_new_marker and current_block:
-                # Target: the specific metadata item or the block itself
+                # Find the target for the text: either the block itself or its last child
                 target = current_block["children"][-1] if current_block["children"] else current_block
                 
                 if target["type"] in MULTILINE_TYPES:
                     if target["args"]:
-                        # Join with newline or space depending on preference
-                        # Newline is usually better for @example
                         joiner = "\n" if target["type"] == MarkerType.EXAMPLE.value else " "
                         target["args"][-1] += f"{joiner}{content}"
                     else:
                         target["args"] = [content]
 
-        # Nest everything under module if found
-        if module_node:
-            others = [b for b in all_blocks if b is not module_node]
-            module_node["children"].extend(others)
-            return [module_node]
-
-        return all_blocks
+        return final_modules

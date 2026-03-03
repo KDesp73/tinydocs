@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+pip install build --break-system-packages
+python -m build
+
+latest=$(ls dist/*.whl | sort -V | tail -n 1)
+
+if [ -z "$latest" ]; then
+    echo "Error: No wheel file found in dist/"
+    exit 1
+fi
+
+echo "Installing: $latest"
+
+pip install "$latest" --break-system-packages --force-reinstall

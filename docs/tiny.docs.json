@@ -1,67 +1,7 @@
 {
     "name": "tinydocs",
-    "timestamp": "2026-03-03 13:42:08",
+    "timestamp": "2026-03-03 21:46:22",
     "docs": [
-        {
-            "file": "tinydocs/generator.py",
-            "docs": {
-                "marker": "module",
-                "type": "module",
-                "args": [
-                    "generator"
-                ],
-                "line": 1,
-                "children": [
-                    {
-                        "marker": "class",
-                        "type": "class",
-                        "args": [
-                            "SiteGenerator"
-                        ],
-                        "line": 6,
-                        "children": [
-                            {
-                                "marker": "desc",
-                                "type": "description",
-                                "args": [
-                                    "Converts the TinyDocs JSON output into a searchable HTML static site."
-                                ],
-                                "line": 7,
-                                "children": []
-                            },
-                            {
-                                "marker": "example",
-                                "type": "example",
-                                "args": [
-                                    "gen = SiteGenerator(\"tiny.docs.json\")\ngen.generate()"
-                                ],
-                                "line": 9,
-                                "children": []
-                            }
-                        ]
-                    },
-                    {
-                        "marker": "method",
-                        "type": "function",
-                        "args": [
-                            "generate"
-                        ],
-                        "line": 17,
-                        "children": [
-                            {
-                                "marker": "desc",
-                                "type": "description",
-                                "args": [
-                                    "Reads the JSON file and renders the Jinja2 template."
-                                ],
-                                "line": 18,
-                                "children": []
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
         {
             "file": "tinydocs/ignore.py",
             "docs": {
@@ -198,7 +138,8 @@
                                 "marker": "returns",
                                 "type": "return",
                                 "args": [
-                                    "bool True if the path should be ignored."
+                                    "bool",
+                                    "True if the path should be ignored."
                                 ],
                                 "line": 58,
                                 "children": []
@@ -236,7 +177,8 @@
                                 "marker": "returns",
                                 "type": "return",
                                 "args": [
-                                    "List[str] A sorted list of non-ignored file paths."
+                                    "List[str]",
+                                    "A sorted list of non-ignored file paths."
                                 ],
                                 "line": 100,
                                 "children": []
@@ -300,7 +242,7 @@
                         "args": [
                             "Marker"
                         ],
-                        "line": 31,
+                        "line": 30,
                         "children": [
                             {
                                 "marker": "desc",
@@ -308,7 +250,7 @@
                                 "args": [
                                     "Represents a documentation tag configuration, defining how to identify and split arguments for specific markers."
                                 ],
-                                "line": 32,
+                                "line": 31,
                                 "children": []
                             }
                         ]
@@ -317,7 +259,7 @@
                         "marker": "constructor",
                         "type": "function",
                         "args": [],
-                        "line": 35,
+                        "line": 34,
                         "children": [
                             {
                                 "marker": "param",
@@ -326,7 +268,7 @@
                                     "name",
                                     "The name of the marker (e.g., 'param', 'method')"
                                 ],
-                                "line": 36,
+                                "line": 35,
                                 "children": []
                             },
                             {
@@ -336,7 +278,7 @@
                                     "arg",
                                     "Whether the marker requires an argument"
                                 ],
-                                "line": 37,
+                                "line": 36,
                                 "children": []
                             },
                             {
@@ -346,7 +288,7 @@
                                     "argc",
                                     "The number of expected arguments for splitting"
                                 ],
-                                "line": 38,
+                                "line": 37,
                                 "children": []
                             },
                             {
@@ -356,7 +298,7 @@
                                     "prefix",
                                     "The symbol prefix, usually '@'"
                                 ],
-                                "line": 39,
+                                "line": 38,
                                 "children": []
                             }
                         ]
@@ -367,7 +309,7 @@
                         "args": [
                             "pattern"
                         ],
-                        "line": 54,
+                        "line": 53,
                         "children": [
                             {
                                 "marker": "desc",
@@ -375,16 +317,17 @@
                                 "args": [
                                     "Generates a regex pattern to match the marker in a string"
                                 ],
-                                "line": 55,
+                                "line": 54,
                                 "children": []
                             },
                             {
                                 "marker": "returns",
                                 "type": "return",
                                 "args": [
-                                    "str The compiled regex pattern"
+                                    "str",
+                                    "The compiled regex pattern"
                                 ],
-                                "line": 56,
+                                "line": 55,
                                 "children": []
                             }
                         ]
@@ -395,7 +338,7 @@
                         "args": [
                             "to_dict"
                         ],
-                        "line": 68,
+                        "line": 67,
                         "children": [
                             {
                                 "marker": "desc",
@@ -403,16 +346,17 @@
                                 "args": [
                                     "Serializes the marker instance into a dictionary"
                                 ],
-                                "line": 69,
+                                "line": 68,
                                 "children": []
                             },
                             {
                                 "marker": "returns",
                                 "type": "return",
                                 "args": [
-                                    "Dict[str, Any]"
+                                    "Dict[str,",
+                                    "Any]"
                                 ],
-                                "line": 70,
+                                "line": 69,
                                 "children": []
                             }
                         ]
@@ -423,7 +367,7 @@
                         "args": [
                             "from_dict"
                         ],
-                        "line": 80,
+                        "line": 79,
                         "children": [
                             {
                                 "marker": "param",
@@ -432,16 +376,17 @@
                                     "d",
                                     "The dictionary containing marker data"
                                 ],
-                                "line": 81,
+                                "line": 80,
                                 "children": []
                             },
                             {
                                 "marker": "returns",
                                 "type": "return",
                                 "args": [
-                                    "Marker A new instance of Marker"
+                                    "Marker",
+                                    "A new instance of Marker"
                                 ],
-                                "line": 82,
+                                "line": 81,
                                 "children": []
                             }
                         ]
@@ -452,7 +397,7 @@
                         "args": [
                             "parse"
                         ],
-                        "line": 96,
+                        "line": 95,
                         "children": [
                             {
                                 "marker": "param",
@@ -461,16 +406,17 @@
                                     "json_str",
                                     "A JSON string representing a list of markers"
                                 ],
-                                "line": 97,
+                                "line": 96,
                                 "children": []
                             },
                             {
                                 "marker": "returns",
                                 "type": "return",
                                 "args": [
-                                    "List[Marker] A list of parsed Marker instances"
+                                    "List[Marker]",
+                                    "A list of parsed Marker instances"
                                 ],
-                                "line": 98,
+                                "line": 97,
                                 "children": []
                             }
                         ]
@@ -557,7 +503,8 @@
                                 "marker": "returns",
                                 "type": "return",
                                 "args": [
-                                    "List[Dict[str, Any]]"
+                                    "List[Dict[str,",
+                                    "Any]]"
                                 ],
                                 "line": 27,
                                 "children": []
