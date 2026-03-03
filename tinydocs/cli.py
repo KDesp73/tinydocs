@@ -10,6 +10,7 @@ from datetime import datetime
 from .ignore import IgnoreChecker
 from .parser import Parser
 from .markers import Marker, MarkerType
+from .generator import SiteGenerator
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger("tinydocs")
@@ -24,6 +25,7 @@ def parse_arguments():
     parser.add_argument("--comment-style", type=str, default="#", help="Comment style (default: #)")
     parser.add_argument("--markers", type=str, default="tiny.markers.json", help="Markers definition JSON")
     parser.add_argument("-o", "--output", type=str, default="docs", help="Output directory")
+    parser.add_argument("--generate", action="store_true", help="Generate static HTML site")
     parser.add_argument("--name", type=str, help="Project name")
 
     return parser.parse_args()
@@ -118,6 +120,17 @@ def main():
     except Exception as e:
         logger.error(f"Failed to write output JSON: {e}")
         sys.exit(1)
+
+    # 7. Site Generation
+    if args.generate:
+        try:
+            gen = SiteGenerator(json_path=str(json_path), output_dir=str(out_dir))
+            gen.generate()
+            logger.info(f"Static site generated in {out_dir}/")
+        except Exception as e:
+            logger.error(f"Site generation failed: {e}")
+            sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

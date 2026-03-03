@@ -28,5 +28,9 @@ where = ["."]
 [tool.setuptools.dynamic]
 version = { attr = "tinydocs.__version__" }
 
+[tool.setuptools.package-data]
+tinydocs = ["templates/*.html.j2"]
+
 [project.scripts]
 tinydocs-cli = "tinydocs.cli:main"
+
