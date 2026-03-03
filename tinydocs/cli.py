@@ -24,7 +24,6 @@ def parse_arguments():
     parser.add_argument("--comment-style", type=str, default="#", help="Comment style (default: #)")
     parser.add_argument("--markers", type=str, default="tiny.markers.json", help="Markers definition JSON")
     parser.add_argument("-o", "--output", type=str, default="docs", help="Output directory")
-    parser.add_argument("--generate", action="store_true", help="Generate static HTML site")
     parser.add_argument("--name", type=str, help="Project name")
 
     return parser.parse_args()
