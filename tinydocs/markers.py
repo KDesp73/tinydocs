@@ -66,7 +66,7 @@ class Marker:
 
     # @method to_dict
     # @desc Serializes the marker instance into a dictionary
-    # @returns Dict[str, Any]
+    # @returns Dict[str,Any] Marker as a dictionary
     def to_dict(self):
         return {
             "prefix": self.prefix,

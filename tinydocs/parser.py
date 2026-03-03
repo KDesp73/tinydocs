@@ -24,7 +24,7 @@ class Parser:
 
     # @method parse
     # @param markers The list of markers to look for while parsing 
-    # @returns List[Dict[str, Any]]
+    # @returns List[Dict[str,Any]] The resulting documentation from each file
     def parse(self, markers: List[Marker]) -> List[Dict[str, Any]]:
         # Ensure all markers have a prefix
         for marker in markers:

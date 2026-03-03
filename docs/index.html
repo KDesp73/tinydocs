@@ -28,7 +28,7 @@
                 
                 async init() {
                     try {
-                        const response = await fetch('tiny.docs.json');
+                        const response = await fetch('/tiny.docs.json');
                         this.projectData = await response.json();
                     } catch (e) {
                         console.error("Failed to load documentation JSON", e);
@@ -86,7 +86,7 @@
     </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-6 pt-4 pb-12">
+<main class="max-w-7xl mx-auto px-6 pb-12">
     <div class="space-y-12">
         <template x-for="item in projectData.docs" :key="item.file">
             <section x-show="shouldShowModule(item)" x-cloak class="relative">

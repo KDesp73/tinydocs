@@ -1,7 +1,38 @@
 {
     "name": "tinydocs",
-    "timestamp": "2026-03-03 22:09:56",
+    "timestamp": "2026-03-03 22:25:08",
     "docs": [
+        {
+            "file": "tinydocs/__init__.py",
+            "docs": {
+                "marker": "module",
+                "type": "module",
+                "args": [
+                    "tinydocs"
+                ],
+                "line": 5,
+                "children": [
+                    {
+                        "marker": "author",
+                        "type": "author",
+                        "args": [
+                            "Konstantinos Despoinidis (KDesp73)"
+                        ],
+                        "line": 6,
+                        "children": []
+                    },
+                    {
+                        "marker": "license",
+                        "type": "license",
+                        "args": [
+                            "MIT"
+                        ],
+                        "line": 7,
+                        "children": []
+                    }
+                ]
+            }
+        },
         {
             "file": "tinydocs/ignore.py",
             "docs": {
@@ -353,8 +384,8 @@
                                 "marker": "returns",
                                 "type": "return",
                                 "args": [
-                                    "Dict[str,",
-                                    "Any]"
+                                    "Dict[str,Any]",
+                                    "Marker as a dictionary"
                                 ],
                                 "line": 69,
                                 "children": []
@@ -503,8 +534,8 @@
                                 "marker": "returns",
                                 "type": "return",
                                 "args": [
-                                    "List[Dict[str,",
-                                    "Any]]"
+                                    "List[Dict[str,Any]]",
+                                    "The resulting documentation from each file"
                                 ],
                                 "line": 27,
                                 "children": []

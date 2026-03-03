@@ -54,6 +54,18 @@
             "type": "example",
             "arg": "required",
             "argc": 1
+        },
+        {
+            "name": "author",
+            "type": "author",
+            "arg": "required",
+            "argc": 1
+        },
+        {
+            "name": "license",
+            "type": "license",
+            "arg": "required",
+            "argc": 1
         }
     ]
 }
