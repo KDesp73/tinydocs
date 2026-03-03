@@ -135,7 +135,7 @@
                                     
                                     {% elif meta.type == 'example' %}
                                         <div class="space-y-2">
-                                            <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Example Usage</span>
+                                            <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">{{ meta.marker }}</span>
                                             <pre><code>{{ meta.args[0] }}</code></pre>
                                         </div>
 
