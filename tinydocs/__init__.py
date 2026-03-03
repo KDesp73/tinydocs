@@ -6,7 +6,7 @@ from .parser import Parser
 # @author Konstantinos Despoinidis (KDesp73)
 # @license MIT
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 __all__ = [
     "IgnoreChecker",
