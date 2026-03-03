@@ -12,6 +12,22 @@ class Argument(Enum):
     NONE = "none"
 
 
+# @enum MarkerType
+# @desc Defines the various types of markers
+class MarkerType(Enum):
+    MODULE = "module"
+    FUNCTION = "function"
+    CLASS = "class"
+    TYPE = "type"
+    DESCRIPTION = "description"
+    PARAMETER = "parameter"
+    RETURN = "return"
+    AUTHOR = "author"
+    EXAMPLE = "example"
+    LICENSE = "license"
+    ANY = "any"
+
+
 # @class Marker
 # @desc Represents a documentation tag configuration, defining how 
 # to identify and split arguments for specific markers.
@@ -24,12 +40,14 @@ class Marker:
     def __init__(
         self,
         name: str,
+        type: Optional[MarkerType] = MarkerType.ANY,
         arg: Optional[Argument] = Argument.REQUIRED,
         argc: Optional[int] = 1,
         prefix: Optional[str] = None,
     ):
         self.prefix = prefix.strip() if prefix else None
         self.name = name.strip()
+        self.type = type
         self.arg = arg
         self.argc = argc
 
@@ -54,6 +72,7 @@ class Marker:
         return {
             "prefix": self.prefix,
             "name": self.name,
+            "type": self.type.value,
             "arg": self.arg.value if self.arg else Argument.NONE.value,
             "argc": self.argc
         }
@@ -63,11 +82,13 @@ class Marker:
     # @returns Marker A new instance of Marker
     @staticmethod
     def from_dict(d: Dict[str, Any]) -> "Marker":
+        type_name = next((t for t in MarkerType if t.value == d.get("type")), MarkerType.ANY)
         arg_name = next((a for a in Argument if a.value == d.get("arg")), Argument.REQUIRED)
-        
+
         return Marker(
             name=d.get("name", ""),
             arg=arg_name,
+            type=type_name,
             argc=d.get("argc", 1),
             prefix=d.get("prefix")
         )

@@ -31,62 +31,95 @@ class Parser:
                 if self.prefix:
                     marker.prefix = self.prefix
                 else:
-                    raise ValueError("You should specify a global prefix or assing one to each marker")
+                    raise ValueError(
+                        "You should specify a global prefix or assign one to each marker"
+                    )
 
         text = self.file.read_text()
         lines = text.split("\n")
-        
+
         all_blocks = []
         current_block = None
         module_node = None
 
+        # Markers allowed to receive multiline continuation
+        MULTILINE_ALLOWED = {"desc", "returns"}
+
         for line_number, line in enumerate(lines, start=1):
             raw_line = line.strip()
-            is_comment = re.match(rf'^{re.escape(self.comment)}', raw_line)
+            is_comment = re.match(rf"^{re.escape(self.comment)}", raw_line)
 
             if not is_comment:
                 current_block = None
                 continue
 
-            content = re.sub(rf'^{re.escape(self.comment)}\s*', '', raw_line).strip()
-            
+            content = re.sub(
+                rf"^{re.escape(self.comment)}\s*", "", raw_line
+            ).strip()
+
             found_new_marker = False
+
             for marker in markers:
-                match = re.search(marker.pattern(), content)
-                if match:
-                    found_new_marker = True
+                match = re.match(marker.pattern(), content)
+                if not match:
+                    continue
 
-                    args = []
-                    if marker.arg != Argument.NONE:
-                        raw_args = match.group("arg").strip()
-                        argc = getattr(marker, 'argc', 1)
-                        args = raw_args.split(" ", maxsplit=argc - 1)
+                found_new_marker = True
 
-                    entry = {
-                        "marker": marker.name,
-                        "args": args,
-                        "line": line_number,
-                        "children": []
-                    }
+                args = []
+                if marker.arg != Argument.NONE:
+                    raw_args = match.group("arg").strip()
 
-                    if marker.name in ["param", "desc", "arg", "returns"]:
-                        if current_block:
-                            current_block["children"].append(entry)
-                        else:
-                            all_blocks.append(entry) # Fallback if no parent
+                    if not raw_args:
+                        raise ValueError(
+                            f"Marker @{marker.name} requires argument(s) at line {line_number}"
+                        )
+
+                    argc = getattr(marker, "argc", 1)
+
+                    if argc <= 0:
+                        args = []
                     else:
-                        if marker.name == "module":
-                            module_node = entry
-                        
-                        all_blocks.append(entry)
-                        current_block = entry
-                    break
+                        split_args = raw_args.split(" ", maxsplit=argc - 1)
 
-            if not found_new_marker and current_block:
-                if current_block["args"]:
-                    current_block["args"][-1] += f" {content}"
+                        if len(split_args) < argc:
+                            raise ValueError(
+                                f"Marker @{marker.name} expects {argc} argument(s) "
+                                f"but got {len(split_args)} at line {line_number}"
+                            )
+
+                        args = split_args
+
+                entry = {
+                    "marker": marker.name,
+                    "type": marker.type.value,
+                    "args": args,
+                    "line": line_number,
+                    "children": []
+                }
+
+                # Child markers
+                if marker.name in {"param", "desc", "returns"}:
+                    if current_block:
+                        current_block["children"].append(entry)
+                    else:
+                        all_blocks.append(entry)
                 else:
-                    current_block["args"] = [content]
+                    if marker.name == "module":
+                        module_node = entry
+
+                    all_blocks.append(entry)
+                    current_block = entry
+
+                break
+
+            # Only allow multiline continuation for specific markers
+            if not found_new_marker and current_block:
+                if current_block["marker"] in MULTILINE_ALLOWED:
+                    if current_block["args"]:
+                        current_block["args"][-1] += f" {content}"
+                    else:
+                        current_block["args"] = [content]
 
         if module_node:
             others = [b for b in all_blocks if b is not module_node]

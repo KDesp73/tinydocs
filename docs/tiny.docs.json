@@ -1,11 +1,12 @@
 {
     "name": "tinydocs",
-    "timestamp": "2026-03-02 22:41:54",
+    "timestamp": "2026-03-03 13:03:35",
     "docs": [
         {
             "file": "tinydocs/generator.py",
             "docs": {
                 "marker": "module",
+                "type": "module",
                 "args": [
                     "generator"
                 ],
@@ -13,6 +14,7 @@
                 "children": [
                     {
                         "marker": "class",
+                        "type": "class",
                         "args": [
                             "SiteGenerator"
                         ],
@@ -20,6 +22,7 @@
                         "children": [
                             {
                                 "marker": "desc",
+                                "type": "description",
                                 "args": [
                                     "Converts the TinyDocs JSON output into a searchable HTML static site."
                                 ],
@@ -30,6 +33,7 @@
                     },
                     {
                         "marker": "method",
+                        "type": "function",
                         "args": [
                             "generate"
                         ],
@@ -37,6 +41,7 @@
                         "children": [
                             {
                                 "marker": "desc",
+                                "type": "description",
                                 "args": [
                                     "Reads the JSON file and renders the Jinja2 template."
                                 ],
@@ -52,6 +57,7 @@
             "file": "tinydocs/ignore.py",
             "docs": {
                 "marker": "module",
+                "type": "module",
                 "args": [
                     "ignore"
                 ],
@@ -59,13 +65,15 @@
                 "children": [
                     {
                         "marker": "class",
+                        "type": "class",
                         "args": [
-                            "IgnoreChecker should be ignored based on glob patterns, similar to .gitignore."
+                            "IgnoreChecker"
                         ],
                         "line": 8,
                         "children": [
                             {
                                 "marker": "desc",
+                                "type": "description",
                                 "args": [
                                     "This class provides utility methods to check if files or directories"
                                 ],
@@ -76,11 +84,13 @@
                     },
                     {
                         "marker": "constructor",
+                        "type": "function",
                         "args": [],
                         "line": 12,
                         "children": [
                             {
                                 "marker": "param",
+                                "type": "parameter",
                                 "args": [
                                     "patterns",
                                     "A list of initial glob patterns to use for ignoring."
@@ -92,13 +102,15 @@
                     },
                     {
                         "marker": "method",
+                        "type": "function",
                         "args": [
-                            "add_pattern handling negations and directory-only constraints."
+                            "add_pattern"
                         ],
                         "line": 20,
                         "children": [
                             {
                                 "marker": "desc",
+                                "type": "description",
                                 "args": [
                                     "Parses and adds a single ignore pattern to the internal list,"
                                 ],
@@ -107,6 +119,7 @@
                             },
                             {
                                 "marker": "param",
+                                "type": "parameter",
                                 "args": [
                                     "pattern",
                                     "The glob string to add."
@@ -118,13 +131,15 @@
                     },
                     {
                         "marker": "method",
+                        "type": "function",
                         "args": [
-                            "load_ignore_files (e.g., '.gitignore' or '.eslintignore')."
+                            "load_ignore_files"
                         ],
                         "line": 43,
                         "children": [
                             {
                                 "marker": "desc",
+                                "type": "description",
                                 "args": [
                                     "Reads ignore patterns from one or more physical files"
                                 ],
@@ -133,6 +148,7 @@
                             },
                             {
                                 "marker": "param",
+                                "type": "parameter",
                                 "args": [
                                     "file_paths",
                                     "A list or comma-separated string of file paths to load."
@@ -144,13 +160,15 @@
                     },
                     {
                         "marker": "method",
+                        "type": "function",
                         "args": [
-                            "is_ignored the full path, the basename, and all parent directories."
+                            "is_ignored"
                         ],
                         "line": 54,
                         "children": [
                             {
                                 "marker": "desc",
+                                "type": "description",
                                 "args": [
                                     "Evaluates if a given path matches any ignore rules, checking"
                                 ],
@@ -159,6 +177,7 @@
                             },
                             {
                                 "marker": "param",
+                                "type": "parameter",
                                 "args": [
                                     "path",
                                     "The file or directory path to check."
@@ -168,6 +187,7 @@
                             },
                             {
                                 "marker": "returns",
+                                "type": "return",
                                 "args": [
                                     "bool True if the path should be ignored."
                                 ],
@@ -178,13 +198,15 @@
                     },
                     {
                         "marker": "method",
+                        "type": "function",
                         "args": [
-                            "filter that are not excluded by the ignore patterns."
+                            "filter"
                         ],
                         "line": 96,
                         "children": [
                             {
                                 "marker": "desc",
+                                "type": "description",
                                 "args": [
                                     "Recursively scans directories and returns a list of files"
                                 ],
@@ -193,6 +215,7 @@
                             },
                             {
                                 "marker": "param",
+                                "type": "parameter",
                                 "args": [
                                     "dirs",
                                     "A comma-separated string of directory paths to scan."
@@ -202,6 +225,7 @@
                             },
                             {
                                 "marker": "returns",
+                                "type": "return",
                                 "args": [
                                     "List[str] A sorted list of non-ignored file paths."
                                 ],
@@ -217,6 +241,7 @@
             "file": "tinydocs/markers.py",
             "docs": {
                 "marker": "module",
+                "type": "module",
                 "args": [
                     "markers"
                 ],
@@ -224,6 +249,7 @@
                 "children": [
                     {
                         "marker": "enum",
+                        "type": "class",
                         "args": [
                             "Argument"
                         ],
@@ -231,6 +257,7 @@
                         "children": [
                             {
                                 "marker": "desc",
+                                "type": "description",
                                 "args": [
                                     "Defines the argument necessity states"
                                 ],
@@ -240,16 +267,18 @@
                         ]
                     },
                     {
-                        "marker": "class",
+                        "marker": "enum",
+                        "type": "class",
                         "args": [
-                            "Marker to identify and split arguments for specific markers."
+                            "MarkerType"
                         ],
                         "line": 15,
                         "children": [
                             {
                                 "marker": "desc",
+                                "type": "description",
                                 "args": [
-                                    "Represents a documentation tag configuration, defining how"
+                                    "Defines the various types of markers"
                                 ],
                                 "line": 16,
                                 "children": []
@@ -257,146 +286,182 @@
                         ]
                     },
                     {
-                        "marker": "constructor",
-                        "args": [],
-                        "line": 19,
+                        "marker": "class",
+                        "type": "class",
+                        "args": [
+                            "Marker"
+                        ],
+                        "line": 31,
                         "children": [
                             {
-                                "marker": "param",
+                                "marker": "desc",
+                                "type": "description",
                                 "args": [
-                                    "name",
-                                    "The name of the marker (e.g., 'param', 'method')"
+                                    "Represents a documentation tag configuration, defining how"
                                 ],
-                                "line": 20,
-                                "children": []
-                            },
-                            {
-                                "marker": "param",
-                                "args": [
-                                    "arg",
-                                    "Whether the marker requires an argument"
-                                ],
-                                "line": 21,
-                                "children": []
-                            },
-                            {
-                                "marker": "param",
-                                "args": [
-                                    "argc",
-                                    "The number of expected arguments for splitting"
-                                ],
-                                "line": 22,
-                                "children": []
-                            },
-                            {
-                                "marker": "param",
-                                "args": [
-                                    "prefix",
-                                    "The symbol prefix, usually '@'"
-                                ],
-                                "line": 23,
+                                "line": 32,
                                 "children": []
                             }
                         ]
                     },
                     {
-                        "marker": "method",
-                        "args": [
-                            "pattern"
-                        ],
-                        "line": 36,
+                        "marker": "constructor",
+                        "type": "function",
+                        "args": [],
+                        "line": 35,
                         "children": [
                             {
-                                "marker": "desc",
+                                "marker": "param",
+                                "type": "parameter",
                                 "args": [
-                                    "Generates a regex pattern to match the marker in a string"
+                                    "name",
+                                    "The name of the marker (e.g., 'param', 'method')"
+                                ],
+                                "line": 36,
+                                "children": []
+                            },
+                            {
+                                "marker": "param",
+                                "type": "parameter",
+                                "args": [
+                                    "arg",
+                                    "Whether the marker requires an argument"
                                 ],
                                 "line": 37,
                                 "children": []
                             },
                             {
-                                "marker": "returns",
+                                "marker": "param",
+                                "type": "parameter",
                                 "args": [
-                                    "str The compiled regex pattern"
+                                    "argc",
+                                    "The number of expected arguments for splitting"
                                 ],
                                 "line": 38,
+                                "children": []
+                            },
+                            {
+                                "marker": "param",
+                                "type": "parameter",
+                                "args": [
+                                    "prefix",
+                                    "The symbol prefix, usually '@'"
+                                ],
+                                "line": 39,
                                 "children": []
                             }
                         ]
                     },
                     {
                         "marker": "method",
+                        "type": "function",
                         "args": [
-                            "to_dict"
+                            "pattern"
                         ],
-                        "line": 50,
+                        "line": 54,
                         "children": [
                             {
                                 "marker": "desc",
+                                "type": "description",
                                 "args": [
-                                    "Serializes the marker instance into a dictionary"
+                                    "Generates a regex pattern to match the marker in a string"
                                 ],
-                                "line": 51,
+                                "line": 55,
                                 "children": []
                             },
                             {
                                 "marker": "returns",
+                                "type": "return",
                                 "args": [
-                                    "Dict[str, Any]"
+                                    "str The compiled regex pattern"
                                 ],
-                                "line": 52,
+                                "line": 56,
                                 "children": []
                             }
                         ]
                     },
                     {
                         "marker": "method",
+                        "type": "function",
+                        "args": [
+                            "to_dict"
+                        ],
+                        "line": 68,
+                        "children": [
+                            {
+                                "marker": "desc",
+                                "type": "description",
+                                "args": [
+                                    "Serializes the marker instance into a dictionary"
+                                ],
+                                "line": 69,
+                                "children": []
+                            },
+                            {
+                                "marker": "returns",
+                                "type": "return",
+                                "args": [
+                                    "Dict[str, Any]"
+                                ],
+                                "line": 70,
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "marker": "method",
+                        "type": "function",
                         "args": [
                             "from_dict"
                         ],
-                        "line": 61,
+                        "line": 80,
                         "children": [
                             {
                                 "marker": "param",
+                                "type": "parameter",
                                 "args": [
                                     "d",
                                     "The dictionary containing marker data"
                                 ],
-                                "line": 62,
+                                "line": 81,
                                 "children": []
                             },
                             {
                                 "marker": "returns",
+                                "type": "return",
                                 "args": [
                                     "Marker A new instance of Marker"
                                 ],
-                                "line": 63,
+                                "line": 82,
                                 "children": []
                             }
                         ]
                     },
                     {
                         "marker": "method",
+                        "type": "function",
                         "args": [
                             "parse"
                         ],
-                        "line": 75,
+                        "line": 96,
                         "children": [
                             {
                                 "marker": "param",
+                                "type": "parameter",
                                 "args": [
                                     "json_str",
                                     "A JSON string representing a list of markers"
                                 ],
-                                "line": 76,
+                                "line": 97,
                                 "children": []
                             },
                             {
                                 "marker": "returns",
+                                "type": "return",
                                 "args": [
                                     "List[Marker] A list of parsed Marker instances"
                                 ],
-                                "line": 77,
+                                "line": 98,
                                 "children": []
                             }
                         ]
@@ -408,6 +473,7 @@
             "file": "tinydocs/parser.py",
             "docs": {
                 "marker": "module",
+                "type": "module",
                 "args": [
                     "parser"
                 ],
@@ -415,13 +481,15 @@
                 "children": [
                     {
                         "marker": "class",
+                        "type": "class",
                         "args": [
-                            "Parser and parsing the doc attributes from a file"
+                            "Parser"
                         ],
                         "line": 8,
                         "children": [
                             {
                                 "marker": "desc",
+                                "type": "description",
                                 "args": [
                                     "This class is responsible for reading"
                                 ],
@@ -432,11 +500,13 @@
                     },
                     {
                         "marker": "constructor",
+                        "type": "function",
                         "args": [],
                         "line": 12,
                         "children": [
                             {
                                 "marker": "param",
+                                "type": "parameter",
                                 "args": [
                                     "file",
                                     "The file to parse"
@@ -446,6 +516,7 @@
                             },
                             {
                                 "marker": "param",
+                                "type": "parameter",
                                 "args": [
                                     "comment",
                                     "The comment prefix (#, //, etc). Defaults to `#`"
@@ -457,6 +528,7 @@
                     },
                     {
                         "marker": "method",
+                        "type": "function",
                         "args": [
                             "parse"
                         ],
@@ -464,6 +536,7 @@
                         "children": [
                             {
                                 "marker": "param",
+                                "type": "parameter",
                                 "args": [
                                     "markers",
                                     "The list of markers to look for while parsing"
@@ -473,6 +546,7 @@
                             },
                             {
                                 "marker": "returns",
+                                "type": "return",
                                 "args": [
                                     "List[Dict[str, Any]]"
                                 ],

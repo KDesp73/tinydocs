@@ -33,5 +33,3 @@ class SiteGenerator:
 
         with open(self.output_dir / "index.html", "w") as f:
             f.write(output_html)
-        
-        print(f"Site generated successfully at {self.output_dir}/index.html")
