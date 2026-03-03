@@ -3,24 +3,18 @@
 ## Installation
 
 ```bash
-# Build from source
-pip install build
-python3 -m build
-
-# Install
-pip install dist/tinydocs-*.whl
+make install
 ```
 
 ## Usage
 
 ```bash
 tinydocs-cli \
-    --dirs tinydocs \
     --markers docs/tiny.markers.json \
+    --ignore .gitignore,.tinyignore
+    --dirs tinydocs \
     --output docs \
     --name tinydocs \
-    --ignore .gitignore,.tinyignore \
-    --generate
 ```
 
 ## License
